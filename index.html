@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distributed Systems MCQ Quiz</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Use the Inter font */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom styles for radio buttons */
+        .option-radio:checked + label {
+            background-color: #3b82f6; /* bg-blue-600 */
+            color: #ffffff; /* text-white */
+            border-color: #2563eb; /* border-blue-700 */
+        }
+        .option-radio {
+            display: none; /* Hide the actual radio button */
+        }
+        
+        /* Disabled state for options after answering */
+        .option-radio:disabled + label {
+            color: #6b7280; /* text-gray-500 */
+            cursor: not-allowed;
+        }
+        
+        /* Feedback Styles */
+        label.feedback-correct {
+            background-color: #dcfce7; /* bg-green-100 */
+            border-color: #22c55e !important; /* border-green-500 */
+            color: #15803d; /* text-green-800 */
+            font-weight: 600; /* semibold */
+        }
+        label.feedback-incorrect {
+            background-color: #fee2e2; /* bg-red-100 */
+            border-color: #ef4444 !important; /* border-red-500 */
+            color: #b91c1c; /* text-red-800 */
+            font-weight: 600; /* semibold */
+        }
+        
+        /* Ensure checked feedback styles override default checked */
+        .option-radio:checked + label.feedback-correct,
+        .option-radio:checked + label.feedback-incorrect {
+             color: #1f2937; /* A dark color for visibility on light bg */
+        }
+        .option-radio:checked + label.feedback-correct {
+             background-color: #bbf7d0; /* brighter green */
+             color: #15803d;
+        }
+        .option-radio:checked + label.feedback-incorrect {
+             background-color: #fecaca; /* brighter red */
+             color: #b91c1c;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-900 flex items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-4xl mx-auto bg-white shadow-2xl rounded-2xl overflow-hidden">
+        
+        <!-- Start Screen -->
+        <div id="start-screen" class="p-8 md:p-16 text-center">
+            <h1 class="text-3xl md:text-5xl font-bold text-gray-800 mb-6">Distributed Systems Quiz</h1>
+            <p class="text-lg md:text-xl text-gray-600 mb-10">
+                Test your knowledge with 120 multiple-choice questions.
+                You will get immediate feedback for each answer.
+            </p>
+            <button id="start-btn" class="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-12 rounded-lg text-xl transition-all duration-300 transform hover:scale-105">
+                Start Quiz
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden p-8 md:p-12">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-blue-600">Question <span id="question-number"></span>/120</h2>
+                <div class="text-lg font-semibold text-gray-700">Score: <span id="score" class="text-green-600">0</span></div>
+            </div>
+
+            <!-- Question -->
+            <p id="question-text" class="text-xl md:text-2xl font-semibold text-gray-800 mb-8 min-h-[100px]"></p>
+
+            <!-- Options -->
+            <div id="options-container" class="space-y-4">
+                <!-- Options will be injected here by JS -->
+            </div>
+
+            <!-- Navigation -->
+            <div class="mt-10 text-right">
+                <button id="next-btn" class="bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 px-10 rounded-lg text-lg transition-all duration-300">
+                    Submit Answer
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-screen" class="hidden p-8 md:p-12">
+            <h2 class="text-4xl font-bold text-center text-gray-800 mb-4">Quiz Complete!</h2>
+            <p class="text-2xl text-center text-gray-600 mb-8">
+                Your Final Score: <span id="final-score" class="text-blue-600 font-bold"></span>
+            </p>
+
+            <div class="text-center mb-10">
+                <button id="restart-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg text-lg transition-all duration-300">
+                    Restart Quiz
+                </button>
+            </div>
+
+            <!-- Detailed Review -->
+            <h3 class="text-2xl font-semibold text-gray-800 mb-6 border-b pb-2">Question Review</h3>
+            <div id="review-container" class="space-y-6 max-h-[60vh] overflow-y-auto pr-2">
+                <!-- Review items will be injected here by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const allQuestions = [
+            // Assignment 1 (2025-07-24)
+            {
+                question: "In a rumor mongering algorithm, there is a/an ____ relationship between the traffic and the residue.",
+                options: ["exponential", "logarithmic", "linear", "quadratic"],
+                correctAnswer: "exponential"
+            },
+            {
+                question: "Which of the following statements is/are correct regarding the rumor mongering protocol?\nS1: There is a chance that updates might not reach a node\nS2: It has a built-in termination protocol.",
+                options: ["S1 is true and S2 is true", "S1 is true and S2 is false", "S1 is false and S2 is true", "S1 is false and S2 is false"],
+                correctAnswer: "S1 is true and S2 is true"
+            },
+            {
+                question: "In the anti-entropy algorithm, if the number of infected nodes in the system is high, then a________ based algorithm is preferred.",
+                options: ["push", "pull", "push-pull", "pull-push"],
+                correctAnswer: "pull"
+            },
+            {
+                question: "In an epidemic protocol, a/an ____ node has not received the update.",
+                options: ["infective", "removed", "injured", "susceptible"],
+                correctAnswer: "susceptible"
+            },
+            {
+                question: "Assume an anti-entropy algorithm that distributes an update across ‘n’ nodes. Any node can contact any other node. How much time does this take (approximately, asymptotically)?",
+                options: ["O(n)", "O(log(n))", "O(n2)", "O(n3)"],
+                correctAnswer: "O(log(n))"
+            },
+            {
+                question: "Consider the following statements.\nS1: In Napster, a client can provide fake details such as IP addresses.\nS2: In Napster, the main coordination entity handles incoming connections from peers.",
+                options: ["S1 is true and S2 is true", "S1 is true and S2 is false", "S1 is false and S2 is true", "S1 is false and S2 is false"],
+                correctAnswer: "S1 is false and S2 is false"
+            },
+            {
+                question: "In Gnutella, the ____ entity manages connections with other Gnutella peers.",
+                options: ["Connection handler", "Co-ordination instance", "Download instance", "Upload instance"],
+                correctAnswer: "Connection handler"
+            },
+            {
+                question: "The co-ordination instance in Gnutella sends the ____ message back to the original client after updating the local database with information about remote peers.",
+                options: ["ping", "pong", "search", "client push"],
+                correctAnswer: "pong"
+            },
+            {
+                question: "In Napster, a client connects to a/the ____ broker.",
+                options: ["Least busy", "Geographically nearest", "Popular", "Random"],
+                correctAnswer: "Least busy"
+            },
+            {
+                question: "Which of the following statements is/are incorrect?",
+                options: ["Gnutella is resilient to network partitions.", "Napster ensures load balancing by finding the best broker.", "Gnutella is scalable due to its distributed architecture.", "None of the options"],
+                correctAnswer: "Gnutella is scalable due to its distributed architecture."
+            },
+
+            // Assignment 2 (2025-08-04)
+            {
+                question: "Consider the following statements regarding distributed hash tables (DHTs).\nS1: DHTs provide immunity against node failures due to the usage of extensive data replication.\nS2: DHTs utilizes a dedicated central server to scale with the number of users.",
+                options: ["S1 is true, S2 is false", "S1 is true, S2 is true", "S1 is false, S2 is false", "S1 is false, S2 is true"],
+                correctAnswer: "S1 is true, S2 is false"
+            },
+            {
+                question: "The configuration parameter b in the Pastry network affects:",
+                options: ["The number of non-empty entries in the routing table only.", "The number of hops required only.", "The number of non-empty entries in the routing table AND the number of required hops.", "None of the options."],
+                correctAnswer: "The number of non-empty entries in the routing table AND the number of required hops."
+            },
+            {
+                question: "While routing a request in Pastry, if the hash of the key (K) is in the range of the node's leaf set (L), then ________.",
+                options: ["forward K to Li such that |K - Li| is minimal.", "forward K to Li such that |K - Li| is maximal.", "forward K to Li such that |K - Li| is negative.", "forward K to any random Li."],
+                correctAnswer: "forward K to Li such that |K - Li| is minimal."
+            },
+            {
+                question: "Which of the following is/are the design goals of Freenet?",
+                options: ["Anonymity", "Deniability", "Reliability", "All the options."],
+                correctAnswer: "All the options."
+            },
+            {
+                question: "In Freenet, if the insertion of a file leads to a hash collision, then _______.",
+                options: ["it drops the file.", "it passes data back to the upstream requester.", "it passes data to its neighbors.", "it sends data to a subset of nodes from its neighbors."],
+                correctAnswer: "it passes data back to the upstream requester."
+            },
+            {
+                question: "Consider the following statements regarding Freenet.\nS1: Information about newly inserted files takes a considerable amount of time to spread across nodes.\nS2: Newly inserted files are placed on nodes with similar keys.",
+                options: ["S1 is true, S2 is false", "S1 is true, S2 is true", "S1 is false, S2 is false", "S1 is false, S2 is true"],
+                correctAnswer: "S1 is false, S2 is true"
+            },
+            {
+                question: "In the pre-routing mechanism, a message is encrypted with the _________.",
+                options: ["last node’s private key", "successive node’s public key", "sender's public key", "sender's private key"],
+                correctAnswer: "successive node’s public key"
+            },
+            {
+                question: "If a requester receives a Reply.Restart message from downstream nodes in Freenet, then _______.",
+                options: ["It extends its timer.", "It shortens its timer.", "It infers failure.", "It resends the request."],
+                correctAnswer: "It extends its timer."
+            },
+            {
+                question: "Which of the following statements is (are) correct regarding the TTL (time-to-live) field in Freenet?",
+                options: ["To reduce the network load, the TTL field can be dynamically decreased.", "Nodes consider the TTL field while deciding the next request to process.", "The TTL field is decremented at every hop", "All the options"],
+                correctAnswer: "All the options"
+            },
+            {
+                question: "Which of the following entities is (are) part of the structure of a Pastry node?",
+                options: ["A routing table", "A neighborhood Table", "A leaf set", "All of the options"],
+                correctAnswer: "All of the options"
+            },
+
+            // Assignment 3 (2025-08-10)
+            {
+                question: "A _______ maintains a list of peers that contain the different pieces of a file in a BitTorrent network.",
+                options: ["torrent table", "tracker", "swarm", "None of the options"],
+                correctAnswer: "tracker"
+            },
+            {
+                question: "Which of the following strategies is employed by the BitTorrent protocol, while downloading a file? [Choose the most appropriate answer]",
+                options: ["A sender will preferentially send data to the nodes that are alive in the network for a longer duration of time.", "A sender prioritizes traffic for those nodes whose network bandwidth is higher.", "A sender will preferentially send data to the nodes that have sent it data in the past.", "All of the options."],
+                correctAnswer: "A sender will preferentially send data to the nodes that have sent it data in the past."
+            },
+            {
+                question: "Consider the following statements about the Chord DHT.\nS1: It is not fully distributed.\nS2: It is based on the consistent hashing technique.",
+                options: ["S1 is correct, S2 is incorrect.", "S1 is incorrect, S2 is correct.", "Both S1 and S2 are correct.", "Both S1 and S2 are incorrect."],
+                correctAnswer: "S1 is incorrect, S2 is correct."
+            },
+            {
+                question: "In general, the path length in the Chord DHT _______ with the number of nodes.",
+                options: ["grows", "shrinks", "remains the same", "may grow or shrink"],
+                correctAnswer: "grows"
+            },
+            {
+                question: "Which of the following tasks is performed by Chord when a node n joins the network? [Choose the most appropriate answer]",
+                options: ["Initialize the predecessor and fingers of node n.", "Update the fingers and predecessors of existing nodes to reflect the addition of n.", "Notify the higher layer software so that it can transfer states (e.g., values) associated with keys that the node is now responsible for.", "All of the options"],
+                correctAnswer: "All of the options"
+            },
+            {
+                question: "A Chord node requires information about at least ____ other nodes for efficient routing in an N-node system.",
+                options: ["O(N)", "O(N/2)", "O(log(N))", "O(log(N)2)"],
+                correctAnswer: "O(log(N))"
+            },
+            {
+                question: "If a and b are two events and Va and Vb represent the corresponding vector times of these events (using a vector clock), what can be said about the relation between a and b when (Va ≰ Vb) ∧ (Va ≱ Vb)?",
+                options: ["a happens before b (a → b)", "b happened before a (b → a)", "a and b are concurrent (a ⋈ b)", "There is no explicit relation."],
+                correctAnswer: "a and b are concurrent (a ⋈ b)"
+            },
+            {
+                question: "In the happens-before-relationship scheme, when process j receives an event a from process i, the clock is updated to _______, where τj and τi are the clocks of process j and i, respectively.",
+                options: ["τj = max(τj + τi (a)) + 1", "τj = τj + 1", "τj = τi (a)", "τj = τi (a) + 1"],
+                correctAnswer: "τj = max(τj + τi (a)) + 1"
+            },
+            {
+                question: "Assume that the sender sends a request to a receiver at its local time (t=10), the receiver receives the request at its local time (t=20) and sends a reply at its local time (t=25). The sender receives the reply at its local time (t = 15). Using Cristian’s algorithm, the drift is __ units.",
+                options: ["10 units.", "5 units.", "15 units", "20 units"],
+                correctAnswer: "10 units."
+            },
+            {
+                question: "What is a server in the BitTorrent network that hosts a new file and distributes its torrent descriptor file called?",
+                options: ["Leecher", "Peer", "Seeder", "Tracker"],
+                correctAnswer: "Seeder"
+            },
+
+            // Assignment 4 (2025-08-20)
+            {
+                question: "Consider the following statements regarding the Chang-Roberts algorithm:\nS1: The number of nodes taking part in the leader election is known a priori.\nS2: Each node is uniquely numbered.",
+                options: ["Both S1 and S2 are true.", "S1 is true, but S2 is false.", "S1 is false, but S2 is true.", "S1 and S2 are both false."],
+                correctAnswer: "S1 is false, but S2 is true."
+            },
+            {
+                question: "In the Chang-Robert's leader election algorithm, if node p with state find, receives a message q from its neighbor such that if _______, then it changes the state to lost.",
+                options: ["q = p", "q > p", "q < p", "All the options"],
+                correctAnswer: "q < p"
+            },
+            {
+                question: "In the Chang-Robert's algorithm, the message of the leader will propagate across ____ nodes in the ring.",
+                options: ["log(n)", "n", "n-k", "sqrt(n)"],
+                correctAnswer: "n"
+            },
+            {
+                question: "In the optimized leader election algorithm with time complexity O(n (log n)), if a node receives (probe, j, k, d) from left such that j < id and d = 2k, then send _____,.",
+                options: ["(probe, j, k, d+1) to right", "(probe, j, k+1, d) to right", "(reply, j, k) to left", "(reply, j, k+1) to right"],
+                correctAnswer: "(reply, j, k) to left"
+            },
+            {
+                question: "In a tree-based leader election mechanism, at most _______ messages are sent on every edge.",
+                options: ["Two", "Four", "Eight", "One"],
+                correctAnswer: "Four"
+            },
+            {
+                question: "In the Ricart-Agarwala algorithm, a process replies to all pending requests after it _______ the lock.",
+                options: ["releases", "requests", "acquires", "acknowledges."],
+                correctAnswer: "releases"
+            },
+            {
+                question: "In the Maekawa’s algorithm, when a process Pj receives a relinquish message from process Pk, it signifies that _________.",
+                options: ["Pk has a low priority.", "Pk has released the lock.", "Pk has received a failed message.", "Pk has not yet acquired the lock."],
+                correctAnswer: "Pk has received a failed message."
+            },
+            {
+                question: "In the Suzuki-Kasami algorithm, process Pj sends the token to Pi, if ______.",
+                options: ["seqi[j] = C[i] + 1", "seqj[i] = C[j] + 1", "seqi[j] = C[j] + 1", "seqj[i] = C[i] + 1"],
+                correctAnswer: "seqj[i] = C[i] + 1"
+            },
+            {
+                question: "In the Raymond’s tree algorithm, the token is with the ___ of the tree.",
+                options: ["one of the internal node", "one of the leaf node", "root", "random node"],
+                correctAnswer: "root"
+            },
+            {
+                question: "Which of the following statements are correct regarding the Raymond’s tree algorithm?\nS1: Circular wait cannot occur because all the nodes wait on the node that holds the token.\nS2: Messages can get lost because all the time a token is held by the root node of the tree.",
+                options: ["S1 is false and S2 is true.", "S1 is true and S2 is false.", "S1 is true and S2 is true.", "S1 is false and S2 is false."],
+                correctAnswer: "S1 is true and S2 is false."
+            },
+
+            // Assignment 5 (2025-08-27)
+            {
+                question: "Consider the following statements regarding the minimum spanning tree (MST):\nS1: If each edge of the graph has a unique weight, then the MST is unique.\nS2: If F is a fragment and e is the least weight outgoing edge, then F ∪ e is also a fragment.",
+                options: ["Both S1 and S2 are true.", "S1 is true, but S2 is false.", "S1 is false, but S2 is true.", "S1 and S2 are both false."],
+                correctAnswer: "Both S1 and S2 are true."
+            },
+            {
+                question: "In the Gallager Humblet Spira (GHS) algorithm, a fragment joins another fragment by identifying its ______ weight ______ edge.",
+                options: ["least, incoming", "highest, incoming", "highest, outgoing", "least, outgoing"],
+                correctAnswer: "least, outgoing"
+            },
+            {
+                question: "When combining two fragments F1 and F2, all the nodes in F1 take on the name and level of F2 if __________.",
+                options: ["level(F1) < level(F2)", "level(F1) > level(F2)", "level(F1) = level(F2)", "All the options"],
+                correctAnswer: "level(F1) < level(F2)"
+            },
+            {
+                question: "If a node p receives a < test, level’, name’ > message from node q such that name(p) = name’ and status[q] = basic, then status[q] is set to ____.",
+                options: ["basic", "reject", "branch", "previous value"],
+                correctAnswer: "reject"
+            },
+            {
+                question: "In the GHS algorithm, at every level, a node receives ___ messages.",
+                options: ["3", "1", "2", "5"],
+                correctAnswer: "2"
+            },
+            {
+                question: "A/An _______ run in the FLP result is the one where at most one process is faulty and every message is eventually delivered. The value that is ultimately decided must have been proposed by some process.",
+                options: ["admissible", "deciding", "strong", "weak"],
+                correctAnswer: "admissible"
+            },
+            {
+                question: "Consider the following statements regarding a partially correct consensus protocol:\nS1: No accessible configuration has more than one decision value.\nS2: None of the accessible configurations have a value that is either 0 or 1.",
+                options: ["Both S1 and S2 are true.", "S1 is true, but S2 is false.", "S1 is false, but S2 is true.", "S1 and S2 are both false."],
+                correctAnswer: "S1 is true, but S2 is false."
+            },
+            {
+                question: "What does the FLP result propose (primarily)?",
+                options: ["Impossibility of distributed consensus with multiple faulty process.", "Impossibility of distributed consensus with a single faulty process.", "Possibility of consensus even with one faulty process.", "Possibility of distributed consensus with multiple faulty process."],
+                correctAnswer: "Impossibility of distributed consensus with a single faulty process."
+            },
+            {
+                question: "Which of the following is true according to the proof of the FLP result?",
+                options: ["A bivalent initial configuration always exists", "A univalent initial configuration always exists", "A bivalent initial configuration sometimes exists", "None of the options."],
+                correctAnswer: "A bivalent initial configuration always exists"
+            },
+            {
+                question: "Which of the following is not a property of the asynchronous model used in the FLP result?",
+                options: ["There is no upper bound on the amount of time a process might take to receive, process, and reply to an incoming message.", "The links can be assumed to be reliable.", "The processors fail according to the fail-stop model.", "The computation can be divided into synchronous rounds."],
+                correctAnswer: "The computation can be divided into synchronous rounds."
+            },
+
+            // Assignment 6 (2025-09-02)
+            {
+                question: "Which of the following is a server state in the Raft Cluster?",
+                options: ["Follower", "Candidate", "Leader", "All the options"],
+                correctAnswer: "All the options"
+            },
+            {
+                question: "If a server with a lower term number sends a message to a server with a higher term number, the latter _______.",
+                options: ["accepts and responds to the message", "rejects the message", "degrades its term number to the smaller value", "becomes a follower and responds to the message"],
+                correctAnswer: "rejects the message"
+            },
+            {
+                question: "Consider the following steps in the leader election process for the Raft protocol:\n1. A periodic heartbeat message is not received for a pre-specified duration.\n2. Every server starts in the follower state.\n3. The server transitions to the candidate state.\n4. The process of electing a new leader starts.\nWhich of the following is the correct ordering of these steps?",
+                options: ["2, 3, 1, 4", "1, 2, 3, 4", "2, 1, 4, 3", "4, 2, 3, 1"],
+                correctAnswer: "2, 1, 4, 3"
+            },
+            {
+                question: "Consider the following statements regarding the Raft consensus protocol:\nS1: A leader can win an election even if its log does not contain all committed entries.\nS2: The candidate’s log should at least be as up to date as the log of the voter.",
+                options: ["Both S1 and S2 are true.", "S1 is true, but S2 is false.", "S1 is false, but S2 is true.", "S1 and S2 are both false."],
+                correctAnswer: "S1 is false, but S2 is true."
+            },
+            {
+                question: "What happens if a leader finds out about another leader or a server with a higher term id in the Raft Cluster?",
+                options: ["Former leader becomes a follower.", "Former leader becomes a candidate.", "Former leader stays the leader and the latter one becomes a follower.", "The latter leader becomes a candidate."],
+                correctAnswer: "Former leader becomes a follower."
+            },
+            {
+                question: "What happens if no leader is elected during the Raft leader election process?",
+                options: ["Each candidate times out and starts a new election.", "The old leader continues to be the leader.", "Only the old leader starts a new election.", "Only the followers start a new election"],
+                correctAnswer: "Each candidate times out and starts a new election."
+            },
+            {
+                question: "Consider the following statements regarding the Raft consensus protocol:\nS1: Raft forces followers to replicate the leader’s logs.\nS2: If two entries in different logs have the same index and term, they store the same command.",
+                options: ["Both S1 and S2 are true.", "S1 is true, but S2 is false.", "S1 is false, but S2 is true.", "S1 and S2 are both false."],
+                correctAnswer: "Both S1 and S2 are true."
+            },
+            {
+                question: "If a proposal (n, v) is chosen, then every proposal with a number _____ than n that is chosen, has value v.",
+                options: ["lesser", "greater", "equal", "None of the options"],
+                correctAnswer: "greater"
+            },
+            {
+                question: "Consider the following statements regarding the safety and liveness properties of concurrent systems:\nS1: The safety property states that something wrong might happen.\nS2: The liveness property states that something good will always happen",
+                options: ["Both S1 and S2 are true.", "S1 is true, but S2 is false.", "S1 is false, but S2 is true.", "S1 and S2 are both false."],
+                correctAnswer: "S1 is false, but S2 is true."
+            },
+            {
+                question: "Which of the following statements is correct regarding Paxos?",
+                options: ["A node can be a proposer and acceptor at the same time.", "A node can only be either a proposer or an acceptor at the same time.", "A proposer contains a set of nodes that join the consensus protocol and learn the accepted value.", "An acceptor contains a set of nodes that propose a value."],
+                correctAnswer: "A node can be a proposer and acceptor at the same time."
+            },
+
+            // Assignment 7 (2025-09-09)
+            {
+                question: "Which of the following statements are correct regarding the Byzantine Generals Problem?\nS1. When a process has a fault, it always lets other processes know about it.\nS2. For a “Byzantine failed” node, all kinds of malicious behavior are acceptable.",
+                options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"],
+                correctAnswer: "S1 is false, S2 is true"
+            },
+            {
+                question: "What is the minimum number of generals required in a Byzantine agreement algorithm when there are 5 traitors?",
+                options: ["11", "15", "16", "20"],
+                correctAnswer: "16"
+            },
+            {
+                question: "At each step of the Byzantine agreement algorithm, each general computes a/an ________ of the values.",
+                options: ["majority", "average", "max", "min"],
+                correctAnswer: "majority"
+            },
+            {
+                question: "In the step OM(m-1) of the Byzantine agreement algorithm, general i receives ________ values (where m is greater than 0 and n is the total number of generals)?",
+                options: ["n", "n - 1", "n - 2", "n + 1"],
+                correctAnswer: "n - 2"
+            },
+            {
+                question: "Which of the following statements are correct regarding the conditions of the Byzantine Generals Problem?\nS1. IC1: Not all loyal lieutenant generals obey the same order.\nS2. IC2: If the commander is loyal, every loyal general obeys the order that the commander issues.",
+                options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"],
+                correctAnswer: "S1 is false, S2 is true"
+            },
+            {
+                question: "Which statement is true regarding the commonly used semantics of one-to-one communication?\nS1. Between the client and server, messages cannot get lost.\nS2. Two commonly used semantics that servers typically provide are At-least-once and At-most-once semantics.",
+                options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"],
+                correctAnswer: "S1 is false, S2 is true"
+            },
+            {
+                question: "Which of the following statements are correct?\nS1. To tolerate k fail-stop failures, we need k+1 processes.\nS2. If processes produce arbitrary outputs, we need k+1 processes where there are k failures.",
+                options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"],
+                correctAnswer: "S1 is true, S2 is false"
+            },
+            {
+                question: "Which of the following statements are correct regarding virtually synchronous multicast (Let us say that view V changes to view V*)?\nS1. If a message m is sent to view V before the view change, then either all processes in (V ∩ V*) receive m, or none do.\nS2. A message sent to view V can be delivered only to processes in V, and not to successive views.",
+                options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"],
+                correctAnswer: "S1 is true, S2 is true"
+            },
+            {
+                question: "Which of the following statements are correct regarding 2-Phase Commit?\nS1. In Phase 1a, the coordinator sends a vote-request message to all participants.\nS2. In Phase 1b, each participant returns either Vote-commit, Vote-abort, or None-of-All.",
+                options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"],
+                correctAnswer: "S1 is true, S2 is false"
+            },
+            {
+                question: "In 3-Phase Commit, after the Coordinator has collected all the votes, it sends a ________ message if all the votes contain the message.",
+                options: ["Prepare-commit", "Ready-commit", "Global-abort", "Global-commit"],
+                correctAnswer: "Prepare-commit"
+            },
+
+            // Assignment 8 (2025-09-15)
+            {
+                question: "Which of the following statements are correct regarding BitTorrent?\nS1. A BitTorrent client can simultaneously download the different pieces from different hosts.\nS2. Each file has a dedicated torrent file.",
+                options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"],
+                correctAnswer: "S1 is true, S2 is true"
+            },
+            {
+                question: "In BitTorrent, a ________ has a list of peers in entire network.",
+                options: ["tracker", "seeder", "descriptor file", "uploader"],
+                correctAnswer: "tracker"
+            },
+            {
+                question: "Which of the following statements are correct regarding BitTorrent?\nS1. BitTorrent guarantees anonymity and user authentication.\nS2. Mainline DHT is the largest DHT in the world with 10 million to 25 million connected computers.",
+                options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"],
+                correctAnswer: "S1 is false, S2 is true"
+            },
+            {
+                question: "Coda File System extends the ___________, to provide more fault tolerance.",
+                options: ["Andrew File System (AFS)", "Google File System (GFS)", "XFS", "ext4"],
+                correctAnswer: "Andrew File System (AFS)"
+            },
+            {
+                question: "In AFS, a file cached in the client is written back to the server when _____________.",
+                options: ["All read and write operations for the file are done", "the file is opened", "the file is closed", "the multiple clients are writing at the same time"],
+                correctAnswer: "the file is closed"
+            },
+            {
+                question: "Which of the following statements are correct regarding Coda File System?\nS1. It uses the AFS caching mechanism as the baseline, which caches entire files in their disks.\nS2. It allows disconnected operation and tolerates server failures by having replicas.",
+                options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"],
+                correctAnswer: "S1 is true, S2 is true"
+            },
+            {
+                question: "Which of the following conflicts cannot be resolved by Coda automatically?",
+                options: ["Update/update conflict", "Remove/update conflict", "Name/name conflict", "All the options"],
+                correctAnswer: "All the options"
+            },
+            {
+                question: "In Coda File System, the client cache manager, named ________, keeps track of the subset of the VSG that is accessible.",
+                options: ["AVSG", "preferred server", "Coda", "Venus"],
+                correctAnswer: "Venus"
+            },
+            {
+                question: "During network partitions, the Coda filesystem handles client operations by __________.",
+                options: ["allowing only read-only operations.", "blocking every operation.", "allowing clients to continue working with cached data.", "queueing operations until the network is restored."],
+                correctAnswer: "allowing clients to continue working with cached data."
+            },
+            {
+                question: "In the Coda File System, _________ is a set of server with replicas of a volume.",
+                options: ["Venus", "preferred server", "Coda", "VSG"],
+                correctAnswer: "VSG"
+            },
+
+            // Assignment 9 (2025-09-19)
+            {
+                question: "Which of the following statements are correct regarding Dynamo?\nS1. Dynamo is a highly available Key-Value Store.\nS2. Dynamo achieves decentralization by employing a peer-to-peer network where each node participates equally in data storage and retrieval.",
+                options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"],
+                correctAnswer: "S1 is true, S2 is true"
+            },
+            {
+                question: "Which ACID property is not provided by Dynamo?",
+                options: ["Atomicity", "Isolation", "Consistency", "Durablity"],
+                correctAnswer: "Consistency"
+            },
+            {
+                question: "Which of the following is a key principle of Dynamo?",
+                options: ["Incremental Scalability: Should be able to scale one node at a time.", "Symmetry: Every node should have the same responsibility.", "Decentralization: Peer to peer system.", "All of them"],
+                correctAnswer: "All of them"
+            },
+            {
+                question: "Which of the following statements are correct regarding Dynamo?\nS1. Reads need to be very fast. Writes can be slow.\nS2. The system should not lose a write request.",
+                options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"],
+                correctAnswer: "S1 is false, S2 is true"
+            },
+            {
+                question: "Which of the following statements are correct regarding Dynamo?\nS1. Failure detection is done by gossip style protocols.\nS2. It uses versioning for put operations with scalar clocks.",
+                options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"],
+                correctAnswer: "S1 is true, S2 is false"
+            },
+            {
+                question: "Which of the following statements are true regarding Google’s page rank algorithm?\nS1. The page rank of an unpopular page is expected to be high.\nS2. The page rank of a page is determined by the page rank of all the pages that link to it.",
+                options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"],
+                correctAnswer: "S1 is false, S2 is true"
+            },
+            {
+                question: "To manage the vast Web, Google uses a/an _____________.",
+                options: ["Page Index", "Inverted Index", "Converted index", "Web link"],
+                correctAnswer: "Inverted Index"
+            },
+            {
+                question: "The ______________ data structure is used to arrange links in Percolator.",
+                options: ["Linked list", "Tree", "Inverted list", "Hash table"],
+                correctAnswer: "Inverted list"
+            },
+            {
+                question: "Which of the following systems guarantees ACID properties for transactions?",
+                options: ["Amazon Dynamo", "Google Percolator", "Apache Cassandra", "Key-Value Store"],
+                correctAnswer: "Google Percolator"
+            },
+            {
+                question: "Google’s distributed storage engine to design Percolator is __________.",
+                options: ["Venus", "Bigtable", "GigaByte", "RocksDB"],
+                correctAnswer: "Bigtable"
+            },
+
+            // Assignment 10 (2025-09-28)
+            {
+                question: "Corona uses a/an _______________ based Overlay.",
+                options: ["Chord", "Pastry", "tree-based", "star-based"],
+                correctAnswer: "Pastry"
+            },
+            {
+                question: "Which of the following statements are correct regarding Corona?\nS1. The Corona resource allocation algorithm dedicates a group of nodes to monitor each channel.\nS2. The Corona use an optimization toolkit to calculate the way the polling tasks should be distributed.",
+                options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"],
+                correctAnswer: "S1 is true, S2 is true"
+            },
+            {
+                question: "Which of the following best describes the aim of Corona-Fast?",
+                options: ["Minimize the number of servers and maximize the number of clients.", "Minimize the load on the servers and achieve the target update time.", "Minimize network latency and reduce the size of each channel.", "Reduce the number of channels and increase the number of nodes."],
+                correctAnswer: "Minimize the load on the servers and achieve the target update time."
+            },
+            {
+                question: "Which of the following statements are correct regarding Corona?\nS1. Both Corona-Lite and Corona-Fast consider the rate of change of objects in the channel.\nS2. Corona-Fair takes the respective weaknesses of Corona-Lite and Corona-Fast into account.",
+                options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"],
+                correctAnswer: "S1 is false, S2 is true"
+            },
+            {
+                question: "Cassandra uses a gossip system based on __________ to propagate membership information.",
+                options: ["Topology-awareness", "Application-specificity", "Rumor mongering", "Anti-entropy"],
+                correctAnswer: "Anti-entropy"
+            },
+            {
+                question: "In Cassandra’s read operation, which data structure is used to quickly determine that a set of files does not contain a particular key?",
+                options: ["Inverted tree", "Bloom filter", "Hash table", "Skip list"],
+                correctAnswer: "Bloom filter"
+            },
+            {
+                question: "Which of the following statements are correct regarding the journaling mechanism of Cassandra?\nS1. Cassandra uses a rolling commit log; after the old log has reached a certain size, it creates a new one.\nS2. Each commit log maintains a bit vector corresponding to disk dumps, but commit log entries cannot be deleted even after persistence.",
+                options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"],
+                correctAnswer: "S1 is true, S2 is false"
+            },
+            {
+                question: "Which of the following statements are correct regarding Haystack?\nS1. Haystack caches the metadata on the local disk.\nS2. Haystack is organized as a DHT.",
+                options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"],
+                correctAnswer: "S1 is false, S2 is true"
+            },
+            {
+                question: "In Facebook’s Haystack Store, metadata is required to access a photo. Which of the following is NOT stored in the metadata?",
+                options: ["Logical volume ID", "File offset", "Size of the photo", "Photo’s contents"],
+                correctAnswer: "Photo’s contents"
+            },
+            {
+                question: "Which of the following statements are correct regarding Haystack?\nS1. Its usage pattern is “Written once, rarely modified, rarely deleted”.\nS2. It requires two disk operations per read.",
+                options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"],
+                correctAnswer: "S1 is false, S2 is false"
+            },
+
+            // Assignment 11 (2025-10-06)
+            {
+                question: "Which of the following statements are correct regarding LinkedIn’s Voldemort system?\nS1. In LinkedIn’s Voldemort system, the build time increases linearly with an increase in the file size.\nS2. Several other sites such eHarmony and Nokia also use the Voldemort system.",
+                options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"],
+                correctAnswer: "S1 is true, S2 is true"
+            },
+            {
+                question: "In LinkedIn’s Voldemort system, which sequence is correct regarding a message that the driver program sends?",
+                options: ["Trigger Build → Trigger Fetch →Trigger Swap", "Trigger Fetch → Trigger Build →Trigger Swap", "Trigger Fetch → Trigger Swap →Trigger Build", "Trigger Swap → Trigger Build →Trigger Fetch"],
+                correctAnswer: "Trigger Build → Trigger Fetch →Trigger Swap"
+            },
+            {
+                question: "Which of the following statements are correct regarding the storage format of the Voldemort system?\nS1. The input data destined for a node is split into single chunk buckets, which is split into multiple chunk sets.\nS2. Each chunk set has a data file and an index file.",
+                options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"],
+                correctAnswer: "S1 is false, S2 is true"
+            },
+            {
+                question: "Which of the following statements are correct regarding a Condor pool?\nS1. Every pool has multiple matchmakers.\nS2. Only agents can form a Condor pool.",
+                options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"],
+                correctAnswer: "S1 is false, S2 is false"
+            },
+            {
+                question: "Which of the following entities manages messages sent by agents and resources, and pairs agents with resources?",
+                options: ["MatchMaker", "Resource", "Agent", "Sandbox"],
+                correctAnswer: "MatchMaker"
+            },
+            {
+                question: "In Condor, the process of an agent reporting itself to multiple matchmakers and effectively joining multiple pools is known as ___________.",
+                options: ["match flocking", "gateway flocking", "direct flocking", "resource flocking"],
+                correctAnswer: "direct flocking"
+            },
+            {
+                question: "Which of the following statements are correct regarding Condor?\nS1. Condor provides support for checkpointing and I/O marshaling.\nS2. For secure communication, Condor uses a secure communication library called Cedar.",
+                options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"],
+                correctAnswer: "S1 is true, S2 is true"
+            },
+            {
+                question: "Which of the following statements are correct regarding Dryad’s system architecture?\nS1. Fault tolerance is not the centralized job manager’s role.\nS2. The centralized job manager monitors jobs and schedules processes.",
+                options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"],
+                correctAnswer: "S1 is false, S2 is true"
+            },
+            {
+                question: "Which of the following statements are correct regarding the overall Dryad system?\nS1. A Dryad job is represented as a directed acyclic graph (DAG).\nS2. In this graph, each vertex is a data channel and each edge is a program.",
+                options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"],
+                correctAnswer: "S1 is true, S2 is false"
+            },
+            {
+                question: "After the job manager in the Dryad system terminates, DyadLINQ collates all the outputs and creates the __________ object.",
+                options: ["node table", "DryadTable", "output table", "ToDrayadTable"],
+                correctAnswer: "DryadTable"
+            },
+
+            // Assignment 12 (2025-10-15)
+            {
+                question: "In basic ACID semantics of databases, ___________ means that operations either fully complete (commit) or fail in entirety.",
+                options: ["Atomicity", "Consistency", "Isolated", "Durable"],
+                correctAnswer: "Atomicity"
+            },
+            {
+                question: "Which of the following statements are correct regarding continuous consistency?\nS1. When reading a replica, we always get the accurate value and never encounter a stale value.\nS2. Different replicas of variable x are loosely synchronized and are not exactly identical.",
+                options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"],
+                correctAnswer: "S1 is false, S2 is true"
+            },
+            {
+                question: "Which of the following statements are correct regarding Causal Consistency?\nS1. Causally related writes must be observed in the same order by all processes.\nS2. Writes without causal relationships must always be observed in the same order.",
+                options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"],
+                correctAnswer: "S1 is true, S2 is false"
+            },
+            {
+                question: "Which of the following statements are correct regarding Ethereum?\nS1. All machines (nodes) share a common world state, which is a shared state modified by transactions.\nS2. Every machine maintains a private machine state in addition to the world state.",
+                options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"],
+                correctAnswer: "S1 is true, S2 is true"
+            },
+            {
+                question: "Which of the following statements are correct regarding Ethereum?\nS1. There is only one function applied to the world state, which transfers money from account A to account B.\nS2. The built-in currency is Ether.",
+                options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"],
+                correctAnswer: "S1 is false, S2 is true"
+            },
+            {
+                question: "Which of the following statements are correct regarding Ethereum?\nS1. Ethereum is a blockchain that belongs to the category of permissioned systems.\nS2. Ethereum uses a Merkle Patricia tree (MPT).",
+                options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"],
+                correctAnswer: "S1 is false, S2 is true"
+            },
+            {
+                question: "Consider the following statements about the Stellar consensus protocol:\nS1. All nodes need to participate in the consensus protocol.\nS2. A quorum contains at least one quorum slice of each of its members.",
+                options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"],
+                correctAnswer: "S1 is false, S2 is true"
+            },
+            {
+                question: "In the Stellar consensus protocol, ___________ is a decentralized agreement process, where each node chooses its own set of trusted nodes (quorum slices) to form a quorum.",
+                options: ["Federated Byzantine Quorum System", "Ethereum system", "distributed system", "blockchain system"],
+                correctAnswer: "Federated Byzantine Quorum System"
+            },
+            {
+                question: "Which of the following statements are correct regarding federated voting properties?\nS1. No duplication: Every correct node delivers at most one voted value.\nS2. Validity: If all nodes vote for a value a, they eventually deliver a different value a′.",
+                options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"],
+                correctAnswer: "S1 is true, S2 is false"
+            },
+            {
+                question: "Which of the following statements are incorrect regarding Byzantine Faults and Quorums?",
+                options: ["Nodes can behave arbitrarily.", "Nodes can behave maliciously.", "Malicious nodes cannot collaborate with each other.", "With 3f+1 nodes, we can tolerate at most f Byzantine failures."],
+                correctAnswer: "Malicious nodes cannot collaborate with each other."
+            }
+        ];
+
+        // DOM Elements
+        const startScreen = document.getElementById('start-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultsScreen = document.getElementById('results-screen');
+
+        const startBtn = document.getElementById('start-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const restartBtn = document.getElementById('restart-btn');
+
+        const questionNumber = document.getElementById('question-number');
+        const scoreEl = document.getElementById('score');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+
+        const finalScore = document.getElementById('final-score');
+        const reviewContainer = document.getElementById('review-container');
+
+        // Quiz State
+        let shuffledQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = []; // To store { question, userAnswer, correctAnswer, isCorrect }
+        let showingFeedback = false; // NEW: State to track if feedback is being shown
+
+        // --- Utility Functions ---
+
+        /**
+         * Shuffles an array in place using the Fisher-Yates algorithm.
+         * @param {Array} array The array to shuffle.
+         */
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // --- Quiz Logic Functions ---
+
+        /**
+         * Initializes and starts the quiz.
+         */
+        function startQuiz() {
+            // Reset state
+            shuffledQuestions = [...allQuestions];
+            shuffleArray(shuffledQuestions);
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            showingFeedback = false;
+            scoreEl.textContent = '0';
+            reviewContainer.innerHTML = ''; // Clear previous results
+
+            // Show quiz screen
+            startScreen.classList.add('hidden');
+            resultsScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+
+            showQuestion();
+        }
+
+        /**
+         * Displays the current question and its options.
+         */
+        function showQuestion() {
+            // Reset feedback state
+            showingFeedback = false;
+            
+            const currentQuestion = shuffledQuestions[currentQuestionIndex];
+            
+            // Update question number and text
+            questionNumber.textContent = currentQuestionIndex + 1;
+            // Use <pre> tag to preserve formatting (like newlines in S1/S2)
+            questionText.innerHTML = `<pre class="text-xl md:text-2xl font-semibold text-gray-800 mb-8 min-h-[100px] whitespace-pre-wrap">${currentQuestion.question}</pre>`;
+
+            // Clear old options
+            optionsContainer.innerHTML = '';
+
+            // Create and append new options
+            currentQuestion.options.forEach((option, index) => {
+                const optionId = `option${index}`;
+                
+                const optionElement = document.createElement('div');
+                
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.id = optionId;
+                radio.name = 'option';
+                radio.value = option;
+                radio.className = 'option-radio';
+                
+                const label = document.createElement('label');
+                label.htmlFor = optionId;
+                label.textContent = option;
+                // Reset to default styles
+                label.className = 'block w-full p-4 border-2 border-gray-300 rounded-lg text-lg font-medium text-gray-700 cursor-pointer transition-all duration-200 hover:border-blue-500';
+
+                optionElement.appendChild(radio);
+                optionElement.appendChild(label);
+                optionsContainer.appendChild(optionElement);
+            });
+
+            // Update Next button text
+            nextBtn.textContent = 'Submit Answer';
+        }
+
+        /**
+         * Processes the user's answer, shows feedback, and then moves to the next question.
+         */
+        function nextQuestion() {
+            // If we are currently showing feedback, just move to the next question
+            if (showingFeedback) {
+                currentQuestionIndex++;
+                if (currentQuestionIndex < shuffledQuestions.length) {
+                    showQuestion(); // This will reset showingFeedback to false
+                } else {
+                    showResults();
+                }
+                return; // Exit the function
+            }
+
+            // --- This part runs if we are NOT showing feedback (i.e., submitting an answer) ---
+            
+            // 1. Find the selected answer
+            const selectedRadio = document.querySelector('input[name="option"]:checked');
+            if (!selectedRadio) {
+                // simple validation
+                alert('Please select an answer before proceeding.');
+                return;
+            }
+
+            // 2. Set state to showing feedback
+            showingFeedback = true;
+
+            // 3. Get answers and check correctness
+            const userAnswer = selectedRadio.value;
+            const currentQuestion = shuffledQuestions[currentQuestionIndex];
+            const correctAnswer = currentQuestion.correctAnswer;
+            const isCorrect = (userAnswer === correctAnswer);
+
+            // 4. Disable all radio buttons
+            const allRadios = document.querySelectorAll('input[name="option"]');
+            allRadios.forEach(radio => {
+                radio.disabled = true;
+            });
+
+            // 5. Store answer for review
+            userAnswers.push({
+                question: currentQuestion.question,
+                userAnswer: userAnswer,
+                correctAnswer: correctAnswer,
+                isCorrect: isCorrect
+            });
+
+            // 6. Apply feedback styles and update score
+            const selectedLabel = selectedRadio.nextElementSibling; // Get the label
+            
+            if (isCorrect) {
+                score++;
+                scoreEl.textContent = score;
+                // Apply correct style to the selected answer
+                selectedLabel.classList.add('feedback-correct');
+            } else {
+                // Apply incorrect style to the selected answer
+                selectedLabel.classList.add('feedback-incorrect');
+
+                // Find and apply correct style to the correct answer
+                const correctRadio = Array.from(allRadios).find(radio => radio.value === correctAnswer);
+                if (correctRadio) {
+                    const correctLabel = correctRadio.nextElementSibling;
+                    correctLabel.classList.add('feedback-correct');
+                }
+            }
+
+            // 7. Update button text
+            if (currentQuestionIndex === shuffledQuestions.length - 1) {
+                nextBtn.textContent = 'Finish';
+            } else {
+                nextBtn.textContent = 'Next Question';
+            }
+        }
+
+        /**
+         * Displays the final results screen.
+         */
+        function showResults() {
+            // Hide quiz screen, show results
+            quizScreen.classList.add('hidden');
+            resultsScreen.classList.remove('hidden');
+
+            // Display final score
+            finalScore.textContent = `${score} / ${shuffledQuestions.length}`;
+
+            // Build the review section
+            reviewContainer.innerHTML = ''; // Clear just in case
+            userAnswers.forEach((answer, index) => {
+                const reviewItem = document.createElement('div');
+                reviewItem.className = 'p-4 border rounded-lg shadow-sm';
+
+                const questionNumText = document.createElement('p');
+                questionNumText.className = 'text-sm font-semibold text-gray-500 mb-2';
+                questionNumText.textContent = `Question ${index + 1}`;
+                
+                const questionReviewText = document.createElement('pre');
+                questionReviewText.className = 'text-lg font-semibold text-gray-800 mb-3 whitespace-pre-wrap';
+                questionReviewText.textContent = answer.question;
+
+                const userAnswerText = document.createElement('p');
+                userAnswerText.className = 'text-base mb-1';
+                userAnswerText.innerHTML = `Your Answer: <span class="font-medium">${answer.userAnswer}</span>`;
+
+                const correctAnswerText = document.createElement('p');
+                correctAnswerText.className = 'text-base mb-3';
+                correctAnswerText.innerHTML = `Correct Answer: <span class="font-medium">${answer.correctAnswer}</span>`;
+                
+                const statusText = document.createElement('p');
+                statusText.className = 'text-lg font-bold';
+
+                if (answer.isCorrect) {
+                    statusText.textContent = 'Correct';
+                    statusText.className += ' text-green-600';
+                    reviewItem.classList.add('bg-green-50', 'border-green-300');
+                } else {
+                    statusText.textContent = 'Incorrect';
+                    statusText.className += ' text-red-600';
+                    reviewItem.classList.add('bg-red-50', 'border-red-300');
+                    // Add extra emphasis to the user's wrong answer in the review
+                    userAnswerText.innerHTML = `Your Answer: <span class="font-bold text-red-700">${answer.userAnswer}</span>`;
+                }
+
+                reviewItem.appendChild(questionNumText);
+                reviewItem.appendChild(questionReviewText);
+                reviewItem.appendChild(userAnswerText);
+                reviewItem.appendChild(correctAnswerText);
+                reviewItem.appendChild(statusText);
+                reviewContainer.appendChild(reviewItem);
+            });
+        }
+
+        // --- Event Listeners ---
+        startBtn.addEventListener('click', startQuiz);
+        nextBtn.addEventListener('click', nextQuestion);
+        restartBtn.addEventListener('click', () => {
+            // Show start screen again
+            resultsScreen.classList.add('hidden');
+            startScreen.classList.remove('hidden');
+        });
+
+    </script>
+</body>
+</html>
+
