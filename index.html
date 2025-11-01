@@ -4,55 +4,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Distributed Systems MCQ Quiz</title>
-    <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Use the Inter font */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         body {
             font-family: 'Inter', sans-serif;
         }
-        /* Custom styles for radio buttons */
         .option-radio:checked + label {
-            background-color: #3b82f6; /* bg-blue-600 */
-            color: #ffffff; /* text-white */
-            border-color: #2563eb; /* border-blue-700 */
+            background-color: #3b82f6; 
+            color: #ffffff; 
+            border-color: #2563eb; 
         }
         .option-radio {
-            display: none; /* Hide the actual radio button */
+            display: none; 
         }
         
-        /* Disabled state for options after answering */
         .option-radio:disabled + label {
-            color: #6b7280; /* text-gray-500 */
+            color: #6b7280; 
             cursor: not-allowed;
         }
         
-        /* Feedback Styles */
         label.feedback-correct {
-            background-color: #dcfce7; /* bg-green-100 */
-            border-color: #22c55e !important; /* border-green-500 */
-            color: #15803d; /* text-green-800 */
-            font-weight: 600; /* semibold */
+            background-color: #dcfce7; 
+            border-color: #22c55e !important; 
+            color: #15803d; 
+            font-weight: 600; 
         }
         label.feedback-incorrect {
-            background-color: #fee2e2; /* bg-red-100 */
-            border-color: #ef4444 !important; /* border-red-500 */
-            color: #b91c1c; /* text-red-800 */
-            font-weight: 600; /* semibold */
+            background-color: #fee2e2; 
+            border-color: #ef4444 !important; 
+            color: #b91c1c; 
+            font-weight: 600; 
         }
         
-        /* Ensure checked feedback styles override default checked */
         .option-radio:checked + label.feedback-correct,
         .option-radio:checked + label.feedback-incorrect {
-             color: #1f2937; /* A dark color for visibility on light bg */
+             color: #1f2937; 
         }
         .option-radio:checked + label.feedback-correct {
-             background-color: #bbf7d0; /* brighter green */
+             background-color: #bbf7d0; 
              color: #15803d;
         }
         .option-radio:checked + label.feedback-incorrect {
-             background-color: #fecaca; /* brighter red */
+             background-color: #fecaca; 
              color: #b91c1c;
         }
     </style>
@@ -61,78 +55,70 @@
 
     <div class="w-full max-w-4xl mx-auto bg-white shadow-2xl rounded-2xl overflow-hidden">
         
-        <!-- Start Screen -->
-        <div id="start-screen" class="p-8 md:p-12">
-            <h1 class="text-3xl md:text-5xl font-bold text-gray-800 mb-8 text-center">Distributed Systems Quiz</h1>
-            <p class="text-lg text-gray-600 mb-8 text-center">
+        <div id="start-screen" class="p-6 md:p-12">
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800 mb-8 text-center">Distributed Systems Quiz</h1>
+            <p class="text-base sm:text-lg text-gray-600 mb-8 text-center">
                 Select a quiz to start. You will get immediate feedback for each answer.
             </p>
             
             <h2 class="text-2xl font-semibold text-gray-700 mb-4">Assignments</h2>
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-8">
-                <!-- Assignment buttons will be injected here by JS -->
             </div>
 
             <h2 class="text-2xl font-semibold text-gray-700 mb-4">Full Quiz</h2>
-            <button class="start-btn w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg text-lg transition-all duration-300" data-quiz-id="all">
+            <button class="start-btn w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-5 sm:py-4 sm:px-6 rounded-lg text-base sm:text-lg transition-all duration-300" data-quiz-id="all">
                 All 120 Questions
             </button>
         </div>
 
-        <!-- Quiz Screen -->
-        <div id="quiz-screen" class="hidden p-8 md:p-12">
-            <!-- Header -->
-            <div class.flex flex-col sm:flex-row justify-between sm:items-center mb-6">
+        <div id="quiz-screen" class="hidden p-6 md:p-12">
+            <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-6">
                 <h2 id="quiz-title" class="text-2xl font-bold text-blue-600 mb-2 sm:mb-0">Quiz Title</h2>
                 <div class="flex justify-between sm:justify-end sm:gap-6">
-                    <div class="text-lg font-semibold text-gray-700">Question <span id="question-number"></span>/<span id="total-questions"></span></div>
-                    <div class="text-lg font-semibold text-gray-700">Score: <span id="score" class="text-green-600">0</span></div>
+                    <div class="text-base sm:text-lg font-semibold text-gray-700">Question <span id="question-number"></span>/<span id="total-questions"></span></div>
+                    <div class="text-base sm:text-lg font-semibold text-gray-700">Score: <span id="score" class="text-green-600">0</span></div>
                 </div>
             </div>
 
-            <!-- Question -->
-            <p id="question-text" class="text-xl md:text-2xl font-semibold text-gray-800 mb-8 min-h-[100px]"></p>
+            <div id="question-text-container" class="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800 mb-8 min-h-[80px] sm:min-h-[100px]"></div>
 
-            <!-- Options -->
-            <div id="options-container" class="space-y-4">
-                <!-- Options will be injected here by JS -->
+            <div id="options-container" class="space-y-3 sm:space-y-4">
             </div>
 
-            <!-- Navigation -->
-            <div class="mt-10 flex justify-between items-center">
-                <button id="quit-btn" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-3 px-6 rounded-lg text-lg transition-all duration-300">
-                    Quit Quiz
+            <div class="mt-8 sm:mt-10 flex justify-between items-center space-x-2 sm:space-x-4">
+                <button id="quit-btn" class="flex-shrink-0 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-4 sm:py-3 sm:px-6 rounded-lg text-base sm:text-lg transition-all duration-300">
+                    Quit
                 </button>
-                <button id="next-btn" class="bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 px-10 rounded-lg text-lg transition-all duration-300">
-                    Submit Answer
-                </button>
+                <div class="flex-grow flex justify-end space-x-2 sm:space-x-4">
+                    <button id="prev-btn" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 sm:py-3 sm:px-6 rounded-lg text-base sm:text-lg transition-all duration-300 hidden">
+                        Previous
+                    </button>
+                    <button id="next-btn" class="bg-gray-800 hover:bg-gray-900 text-white font-bold py-2 px-6 sm:py-3 sm:px-10 rounded-lg text-base sm:text-lg transition-all duration-300">
+                        Submit Answer
+                    </button>
+                </div>
             </div>
         </div>
 
-        <!-- Results Screen -->
-        <div id="results-screen" class="hidden p-8 md:p-12">
-            <h2 class="text-4xl font-bold text-center text-gray-800 mb-4">Quiz Complete!</h2>
-            <p class="text-2xl text-center text-gray-600 mb-8">
+        <div id="results-screen" class="hidden p-6 md:p-12">
+            <h2 class="text-3xl sm:text-4xl font-bold text-center text-gray-800 mb-4">Quiz Complete!</h2>
+            <p class="text-xl sm:text-2xl text-center text-gray-600 mb-8">
                 Your Final Score: <span id="final-score" class="text-blue-600 font-bold"></span>
             </p>
 
             <div class="text-center mb-10">
-                <button id="restart-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg text-lg transition-all duration-300">
+                <button id="restart-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 sm:py-3 sm:px-8 rounded-lg text-base sm:text-lg transition-all duration-300">
                     Take Another Quiz
                 </button>
             </div>
 
-            <!-- Detailed Review -->
             <h3 class="text-2xl font-semibold text-gray-800 mb-6 border-b pb-2">Review Incorrect Answers</h3>
             <div id="review-container" class="space-y-6 max-h-[60vh] overflow-y-auto pr-2">
-                <!-- Review items will be injected here by JS -->
             </div>
         </div>
     </div>
 
     <script>
-        // --- Data ---
-        // Restructured data into separate assignments
         const quizData = {
             assignment1: [
                 { question: "In a rumor mongering algorithm, there is a/an ____ relationship between the traffic and the residue.", options: ["exponential", "logarithmic", "linear", "quadratic"], correctAnswer: "exponential" },
@@ -222,7 +208,7 @@
                 { question: "Which of the following statements are correct regarding BitTorrent?\nS1. A BitTorrent client can simultaneously download the different pieces from different hosts.\nS2. Each file has a dedicated torrent file.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is true, S2 is true" },
                 { question: "In BitTorrent, a ________ has a list of peers in entire network.", options: ["tracker", "seeder", "descriptor file", "uploader"], correctAnswer: "tracker" },
                 { question: "Which of the following statements are correct regarding BitTorrent?\nS1. BitTorrent guarantees anonymity and user authentication.\nS2. Mainline DHT is the largest DHT in the world with 10 million to 25 million connected computers.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is false, S2 is true" },
-                { question: "Coda File System extends the ___________, to provide more fault tolerance.", options: ["Andrew File System (AFS)", "Google File System (GFS)", "XFS", "ext4"], correctAnswer: "Andrew FileSystem (AFS)" },
+                { question: "Coda File System extends the ___________, to provide more fault tolerance.", options: ["Andrew File System (AFS)", "Google File System (GFS)", "XFS", "ext4"], correctAnswer: "Andrew File System (AFS)" },
                 { question: "In AFS, a file cached in the client is written back to the server when _____________.", options: ["All read and write operations for the file are done", "the file is opened", "the file is closed", "the multiple clients are writing at the same time"], correctAnswer: "the file is closed" },
                 { question: "Which of the following statements are correct regarding Coda File System?\nS1. It uses the AFS caching mechanism as the baseline, which caches entire files in their disks.\nS2. It allows disconnected operation and tolerates server failures by having replicas.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is true, S2 is true" },
                 { question: "Which of the following conflicts cannot be resolved by Coda automatically?", options: ["Update/update conflict", "Remove/update conflict", "Name/name conflict", "All the options"], correctAnswer: "All the options" },
@@ -261,7 +247,7 @@
                 { question: "Which of the following statements are correct regarding a Condor pool?\nS1. Every pool has multiple matchmakers.\nS2. Only agents can form a Condor pool.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is false, S2 is false" },
                 { question: "Which of the following entities manages messages sent by agents and resources, and pairs agents with resources?", options: ["MatchMaker", "Resource", "Agent", "Sandbox"], correctAnswer: "MatchMaker" },
                 { question: "In Condor, the process of an agent reporting itself to multiple matchmakers and effectively joining multiple pools is known as ___________.", options: ["match flocking", "gateway flocking", "direct flocking", "resource flocking"], correctAnswer: "direct flocking" },
-                { question: "Which of the following statements are correct regarding Condor?\nS1. Condor provides support for checkpointing and I/O marshaling.\nS2. For secure communication, Condor uses a secure communication library called Cedar.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is true, S2 is true" },
+                { question: "Which of the following statements are correct regarding Condor?\nSKey. Condor provides support for checkpointing and I/O marshaling.\nS2. For secure communication, Condor uses a secure communication library called Cedar.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is true, S2 is true" },
                 { question: "Which of the following statements are correct regarding Dryad’s system architecture?\nS1. Fault tolerance is not the centralized job manager’s role.\nS2. The centralized job manager monitors jobs and schedules processes.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is false, S2 is true" },
                 { question: "Which of the following statements are correct regarding the overall Dryad system?\nS1. A Dryad job is represented as a directed acyclic graph (DAG).\nS2. In this graph, each vertex is a data channel and each edge is a program.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is true, S2 is false" },
                 { question: "After the job manager in the Dryad system terminates, DyadLINQ collates all the outputs and creates the __________ object.", options: ["node table", "DryadTable", "output table", "ToDrayadTable"], correctAnswer: "DryadTable" }
@@ -280,12 +266,12 @@
             ]
         };
 
-        // --- DOM Elements ---
         const startScreen = document.getElementById('start-screen');
         const quizScreen = document.getElementById('quiz-screen');
         const resultsScreen = document.getElementById('results-screen');
 
         const nextBtn = document.getElementById('next-btn');
+        const prevBtn = document.getElementById('prev-btn');
         const quitBtn = document.getElementById('quit-btn');
         const restartBtn = document.getElementById('restart-btn');
 
@@ -293,25 +279,18 @@
         const questionNumber = document.getElementById('question-number');
         const totalQuestions = document.getElementById('total-questions');
         const scoreEl = document.getElementById('score');
-        const questionText = document.getElementById('question-text');
+        const questionTextContainer = document.getElementById('question-text-container');
         const optionsContainer = document.getElementById('options-container');
 
         const finalScore = document.getElementById('final-score');
         const reviewContainer = document.getElementById('review-container');
 
-        // --- Quiz State ---
         let shuffledQuestions = [];
         let currentQuestionIndex = 0;
         let score = 0;
-        let userAnswers = []; // To store { question, userAnswer, correctAnswer, isCorrect, originalIndex }
-        let showingFeedback = false; // State to track if feedback is being shown
+        let userAnswers = []; 
+        let showingFeedback = false; 
 
-        // --- Utility Functions ---
-
-        /**
-         * Shuffles an array in place using the Fisher-Yates algorithm.
-         * @param {Array} array The array to shuffle.
-         */
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -319,14 +298,9 @@
             }
         }
 
-        // --- Init Functions ---
-
-        /**
-         * Populates the start screen with assignment buttons.
-         */
         function populateStartScreen() {
             const assignmentGrid = startScreen.querySelector('.grid');
-            assignmentGrid.innerHTML = ''; // Clear existing
+            assignmentGrid.innerHTML = ''; 
             
             for (let i = 1; i <= 12; i++) {
                 const quizId = `assignment${i}`;
@@ -340,67 +314,52 @@
             }
         }
 
-        // --- Quiz Logic Functions ---
 
-        /**
-         * Initializes and starts the quiz.
-         * @param {string} quizId - The key from quizData (e.g., "assignment1" or "all")
-         */
         function startQuiz(quizId) {
             let quizName = "";
-            // 1. Get and set up the questions
             if (quizId === 'all') {
-                // Combine all assignment arrays into one
                 shuffledQuestions = Object.values(quizData).flat();
                 quizName = "All 120 Questions";
             } else {
-                // Get the specific assignment array
-                shuffledQuestions = [...quizData[quizId]]; // Create a copy
+                shuffledQuestions = [...quizData[quizId]]; 
                 quizName = `Assignment ${quizId.replace('assignment', '')}`;
             }
             
-            // 2. Randomize the selected questions
             shuffleArray(shuffledQuestions);
 
-            // 3. Reset state
             currentQuestionIndex = 0;
             score = 0;
             userAnswers = [];
             showingFeedback = false;
             
-            // 4. Update UI elements
             scoreEl.textContent = '0';
-            reviewContainer.innerHTML = ''; // Clear previous results
+            reviewContainer.innerHTML = ''; 
             quizTitle.textContent = quizName;
             totalQuestions.textContent = shuffledQuestions.length;
 
-            // 5. Show quiz screen
             startScreen.classList.add('hidden');
             resultsScreen.classList.add('hidden');
             quizScreen.classList.remove('hidden');
 
-            // 6. Display the first question
             showQuestion();
         }
 
-        /**
-         * Displays the current question and its options.
-         */
         function showQuestion() {
-            // Reset feedback state
             showingFeedback = false;
+            nextBtn.disabled = false;
+            
+            // --- THIS IS THE FIX ---
+            // Show/hide prev button based on the current index
+            prevBtn.classList.toggle('hidden', currentQuestionIndex === 0);
+            // ---------------------
             
             const currentQuestion = shuffledQuestions[currentQuestionIndex];
             
-            // Update question number and text
             questionNumber.textContent = currentQuestionIndex + 1;
-            // Use <pre> tag to preserve formatting (like newlines in S1/S2)
-            questionText.innerHTML = `<pre class="text-xl md:text-2xl font-semibold text-gray-800 mb-8 min-h-[100px] whitespace-pre-wrap">${currentQuestion.question}</pre>`;
+            questionTextContainer.innerHTML = `<pre class="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800 whitespace-pre-wrap">${currentQuestion.question}</pre>`;
 
-            // Clear old options
             optionsContainer.innerHTML = '';
 
-            // Create and append new options
             currentQuestion.options.forEach((option, index) => {
                 const optionId = `option${index}`;
                 
@@ -416,88 +375,143 @@
                 const label = document.createElement('label');
                 label.htmlFor = optionId;
                 label.textContent = option;
-                // Reset to default styles
-                label.className = 'block w-full p-4 border-2 border-gray-300 rounded-lg text-lg font-medium text-gray-700 cursor-pointer transition-all duration-200 hover:border-blue-500';
+                label.className = 'block w-full p-3 sm:p-4 border-2 border-gray-300 rounded-lg text-base sm:text-lg font-medium text-gray-700 cursor-pointer transition-all duration-200 hover:border-blue-500';
 
                 optionElement.appendChild(radio);
                 optionElement.appendChild(label);
                 optionsContainer.appendChild(optionElement);
             });
 
-            // Update Next button text
             nextBtn.textContent = 'Submit Answer';
         }
 
-        /**
-         * Processes the user's answer, shows feedback, and then moves to the next question.
-         */
+        function showAnsweredQuestion(index) {
+            showingFeedback = true; 
+            nextBtn.disabled = false;
+            prevBtn.classList.toggle('hidden', index === 0);
+
+            const questionData = shuffledQuestions[index];
+            const answerData = userAnswers.find(a => a.originalIndex === index + 1);
+
+            if (!questionData || !answerData) return; 
+
+            questionNumber.textContent = index + 1;
+            questionTextContainer.innerHTML = `<pre class="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800 whitespace-pre-wrap">${questionData.question}</pre>`;
+            
+            optionsContainer.innerHTML = '';
+
+            questionData.options.forEach((option, i) => {
+                const optionId = `option${i}`;
+                const optionElement = document.createElement('div');
+                
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.id = optionId;
+                radio.name = 'option';
+                radio.value = option;
+                radio.className = 'option-radio';
+                radio.disabled = true;
+
+                const label = document.createElement('label');
+                label.htmlFor = optionId;
+                label.textContent = option;
+                label.className = 'block w-full p-3 sm:p-4 border-2 border-gray-300 rounded-lg text-base sm:text-lg font-medium text-gray-700 cursor-pointer transition-all duration-200';
+
+                if (option === answerData.userAnswer) {
+                    radio.checked = true;
+                    label.classList.add(answerData.isCorrect ? 'feedback-correct' : 'feedback-incorrect');
+                } else if (option === answerData.correctAnswer) {
+                    label.classList.add('feedback-correct');
+                }
+
+                optionElement.appendChild(radio);
+                optionElement.appendChild(label);
+                optionsContainer.appendChild(optionElement);
+            });
+
+            if (index === shuffledQuestions.length - 1) {
+                nextBtn.textContent = 'Finish';
+            } else {
+                nextBtn.textContent = 'Next Question';
+            }
+        }
+
+
         function nextQuestion() {
-            // If we are currently showing feedback, just move to the next question
             if (showingFeedback) {
                 currentQuestionIndex++;
                 if (currentQuestionIndex < shuffledQuestions.length) {
-                    showQuestion(); // This will reset showingFeedback to false
+                    if (userAnswers.find(a => a.originalIndex === currentQuestionIndex + 1)) {
+                        showAnsweredQuestion(currentQuestionIndex);
+                    } else {
+                        showQuestion();
+                    }
                 } else {
                     showResults();
                 }
-                return; // Exit the function
+                return; 
             }
 
-            // --- This part runs if we are NOT showing feedback (i.e., submitting an answer) ---
-            
-            // 1. Find the selected answer
             const selectedRadio = document.querySelector('input[name="option"]:checked');
             if (!selectedRadio) {
-                // simple validation
-                alert('Please select an answer before proceeding.');
                 return;
             }
 
-            // 2. Set state to showing feedback
             showingFeedback = true;
+            nextBtn.disabled = true; 
 
-            // 3. Get answers and check correctness
             const userAnswer = selectedRadio.value;
             const currentQuestion = shuffledQuestions[currentQuestionIndex];
             const correctAnswer = currentQuestion.correctAnswer;
             const isCorrect = (userAnswer === correctAnswer);
 
-            // 4. Disable all radio buttons
             const allRadios = document.querySelectorAll('input[name="option"]');
             allRadios.forEach(radio => {
                 radio.disabled = true;
             });
 
-            // 5. Store answer for review
-            userAnswers.push({
+            const answerData = {
                 question: currentQuestion.question,
                 userAnswer: userAnswer,
                 correctAnswer: correctAnswer,
                 isCorrect: isCorrect,
-                originalIndex: currentQuestionIndex + 1 // Store the question number
-            });
+                originalIndex: currentQuestionIndex + 1
+            };
 
-            // 6. Apply feedback styles and update score
-            const selectedLabel = selectedRadio.nextElementSibling; // Get the label
+            const existingAnswerIndex = userAnswers.findIndex(a => a.originalIndex === answerData.originalIndex);
+            if (existingAnswerIndex > -1) {
+                if (!userAnswers[existingAnswerIndex].isCorrect && isCorrect) {
+                    score++; 
+                } else if (userAnswers[existingAnswerIndex].isCorrect && !isCorrect) {
+                    score--;
+                }
+                userAnswers[existingAnswerIndex] = answerData; 
+            } else {
+                userAnswers.push(answerData);
+                if (isCorrect) {
+                    score++;
+                }
+            }
+            
+            scoreEl.textContent = score;
+
+            const selectedLabel = selectedRadio.nextElementSibling; 
             
             if (isCorrect) {
-                score++;
-                scoreEl.textContent = score;
-                // Apply correct style to the selected answer
                 selectedLabel.classList.add('feedback-correct');
             } else {
-                // Apply incorrect style to the selected answer
                 selectedLabel.classList.add('feedback-incorrect');
 
-                // Find and apply correct style to the correct answer
                 const correctRadio = Array.from(allRadios).find(radio => radio.value === correctAnswer);
                 if (correctRadio) {
                     const correctLabel = correctRadio.nextElementSibling;
                     correctLabel.classList.add('feedback-correct');
                 }
             }
+            
+            prevBtn.classList.toggle('hidden', currentQuestionIndex === 0);
+            nextBtn.disabled = false;
 
-            // 7. Update button text
             if (currentQuestionIndex === shuffledQuestions.length - 1) {
                 nextBtn.textContent = 'Finish';
             } else {
@@ -505,48 +519,47 @@
             }
         }
 
-        /**
-         * Displays the final results screen.
-         */
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                showAnsweredQuestion(currentQuestionIndex);
+            }
+        }
+
         function showResults() {
-            // Hide quiz screen, show results
             quizScreen.classList.add('hidden');
             resultsScreen.classList.remove('hidden');
 
-            // Display final score
             finalScore.textContent = `${score} / ${shuffledQuestions.length}`;
 
-            // Build the review section
-            reviewContainer.innerHTML = ''; // Clear
+            reviewContainer.innerHTML = ''; 
             
             let incorrectCount = 0;
 
-            userAnswers.forEach((answer) => {
-                // *** MODIFICATION: Only show incorrect answers ***
+            userAnswers.sort((a, b) => a.originalIndex - b.originalIndex).forEach((answer) => {
                 if (answer.isCorrect) {
-                    return; // Skip this item
+                    return; 
                 }
 
                 incorrectCount++;
 
                 const reviewItem = document.createElement('div');
-                reviewItem.className = 'p-4 border border-red-300 bg-red-50 rounded-lg shadow-sm';
+                reviewItem.className = 'p-3 sm:p-4 border border-red-300 bg-red-50 rounded-lg shadow-sm';
 
                 const questionNumText = document.createElement('p');
                 questionNumText.className = 'text-sm font-semibold text-gray-500 mb-2';
-                questionNumText.textContent = `Question ${answer.originalIndex}`; // Use original index
+                questionNumText.textContent = `Question ${answer.originalIndex}`; 
                 
                 const questionReviewText = document.createElement('pre');
-                questionReviewText.className = 'text-lg font-semibold text-gray-800 mb-3 whitespace-pre-wrap';
+                questionReviewText.className = 'text-base sm:text-lg font-semibold text-gray-800 mb-3 whitespace-pre-wrap';
                 questionReviewText.textContent = answer.question;
 
                 const userAnswerText = document.createElement('p');
-                userAnswerText.className = 'text-base mb-1';
-                // Add extra emphasis to the user's wrong answer in the review
+                userAnswerText.className = 'text-sm sm:text-base mb-1';
                 userAnswerText.innerHTML = `Your Answer: <span class="font-bold text-red-700">${answer.userAnswer}</span>`;
 
                 const correctAnswerText = document.createElement('p');
-                correctAnswerText.className = 'text-base mb-3';
+                correctAnswerText.className = 'text-sm sm:text-base mb-3';
                 correctAnswerText.innerHTML = `Correct Answer: <span class="font-medium text-green-700">${answer.correctAnswer}</span>`;
                 
                 reviewItem.appendChild(questionNumText);
@@ -556,28 +569,18 @@
                 reviewContainer.appendChild(reviewItem);
             });
 
-            // *** MODIFICATION: Show message if all are correct ***
             if (incorrectCount === 0) {
                 reviewContainer.innerHTML = '<p class="text-lg text-green-600 font-medium text-center">Congratulations! You got all questions correct!</p>';
             }
         }
 
-        /**
-         * Returns the user to the start screen.
-         */
         function quitQuiz() {
-            // Simple confirmation
-            if (confirm("Are you sure you want to quit? Your progress will be lost.")) {
-                quizScreen.classList.add('hidden');
-                resultsScreen.classList.add('hidden');
-                startScreen.classList.remove('hidden');
-            }
+            quizScreen.classList.add('hidden');
+            resultsScreen.classList.add('hidden');
+            startScreen.classList.remove('hidden');
         }
 
 
-        // --- Event Listeners ---
-
-        // Listen for clicks on the start screen
         startScreen.addEventListener('click', (e) => {
             if (e.target.matches('.start-btn')) {
                 const quizId = e.target.dataset.quizId;
@@ -585,22 +588,23 @@
             }
         });
 
-        // Next/Submit button
         nextBtn.addEventListener('click', nextQuestion);
+        prevBtn.addEventListener('click', prevQuestion);
         
-        // Restart button (now "Take Another Quiz")
         restartBtn.addEventListener('click', () => {
             resultsScreen.classList.add('hidden');
             startScreen.classList.remove('hidden');
         });
 
-        // Quit button
-        quitBtn.addEventListener('click', quitQuiz);
+        quitBtn.addEventListener('click', () => {
+             quizScreen.classList.add('hidden');
+             resultsScreen.classList.add('hidden');
+             startScreen.classList.remove('hidden');
+        });
 
-        // --- Initial Page Load ---
-        // Populate the assignment buttons on the start screen when the page loads
         document.addEventListener('DOMContentLoaded', populateStartScreen);
 
     </script>
 </body>
 </html>
+
