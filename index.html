@@ -4,12 +4,364 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Distributed Systems MCQ Quiz</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        /* --- Global & Body --- */
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* bg-gray-100 */
+            color: #111827; /* text-gray-900 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 1rem; /* p-4 */
+            margin: 0;
         }
+        
+        button {
+            border: none;
+            cursor: pointer;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* --- Main Container --- */
+        .quiz-container {
+            width: 100%;
+            max-width: 56rem; /* max-w-4xl */
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #ffffff; /* bg-white */
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); /* shadow-2xl */
+            border-radius: 1rem; /* rounded-2xl */
+            overflow: hidden;
+        }
+
+        /* --- Start Screen --- */
+        #start-screen {
+            padding: 1.5rem; /* p-6 */
+        }
+        #start-screen h1 {
+            font-size: 1.875rem; /* text-3xl */
+            font-weight: 700; /* font-bold */
+            color: #1f2937; /* text-gray-800 */
+            margin-bottom: 2rem; /* mb-8 */
+            text-align: center; /* text-center */
+        }
+        #start-screen p {
+            font-size: 1rem; /* text-base */
+            color: #4b5563; /* text-gray-600 */
+            margin-bottom: 2rem; /* mb-8 */
+            text-align: center; /* text-center */
+        }
+        #start-screen h2 {
+            font-size: 1.5rem; /* text-2xl */
+            font-weight: 600; /* font-semibold */
+            color: #374151; /* text-gray-700 */
+            margin-bottom: 1rem; /* mb-4 */
+        }
+        .assignment-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr)); /* grid-cols-2 */
+            gap: 1rem; /* gap-4 */
+            margin-bottom: 2rem; /* mb-8 */
+        }
+        .start-btn {
+            width: 100%;
+            background-color: #2563eb; /* bg-blue-600 */
+            color: #ffffff; /* text-white */
+            font-weight: 700; /* font-bold */
+            padding: 0.75rem 1.25rem; /* py-3 px-5 */
+            border-radius: 0.5rem; /* rounded-lg */
+            font-size: 1rem; /* text-base */
+            transition-property: all; /* transition-all */
+            transition-duration: 300ms; /* duration-300 */
+        }
+        .start-btn:hover {
+            background-color: #1d4ed8; /* hover:bg-blue-700 */
+        }
+        
+        /* --- Quiz Screen --- */
+        #quiz-screen {
+            padding: 1.5rem; /* p-6 */
+        }
+        .quiz-header {
+            display: flex;
+            flex-direction: column; /* flex-col */
+            margin-bottom: 1.5rem; /* mb-6 */
+        }
+        #quiz-title {
+            font-size: 1.5rem; /* text-2xl */
+            font-weight: 700; /* font-bold */
+            color: #2563eb; /* text-blue-600 */
+            margin-bottom: 0.5rem; /* mb-2 */
+        }
+        .quiz-stats {
+            display: flex;
+            justify-content: space-between; /* justify-between */
+        }
+        .stat-item {
+            font-size: 1rem; /* text-base */
+            font-weight: 600; /* font-semibold */
+            color: #374151; /* text-gray-700 */
+        }
+        #score {
+            color: #16a34a; /* text-green-600 */
+        }
+
+        #question-text-container {
+            font-size: 1.125rem; /* text-lg */
+            font-weight: 600; /* font-semibold */
+            color: #1f2937; /* text-gray-800 */
+            margin-bottom: 2rem; /* mb-8 */
+            min-height: 80px;
+        }
+
+        #options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem; /* space-y-3 */
+        }
+
+        .option-label {
+            display: block;
+            border: 2px solid #d1d5db; /* border-2 border-gray-300 */
+            padding: 1rem; /* p-4 */
+            border-radius: 0.5rem; /* rounded-lg */
+            cursor: pointer;
+            transition-property: all;
+            transition-duration: 200ms;
+        }
+        .option-label:hover {
+            border-color: #60a5fa; /* hover:border-blue-400 */
+        }
+
+        .button-nav {
+            margin-top: 2rem; /* mt-8 */
+            display: flex;
+            justify-content: space-between; /* justify-between */
+            align-items: center; /* items-center */
+            gap: 0.5rem; /* space-x-2 */
+        }
+        #quit-btn {
+            flex-shrink: 0;
+            background-color: #e5e7eb; /* bg-gray-200 */
+            color: #374151; /* text-gray-700 */
+            font-weight: 700; /* font-bold */
+            padding: 0.5rem 1rem; /* py-2 px-4 */
+            border-radius: 0.5rem; /* rounded-lg */
+            font-size: 1rem; /* text-base */
+            transition-property: all;
+            transition-duration: 300ms;
+        }
+        #quit-btn:hover {
+            background-color: #d1d5db; /* hover:bg-gray-300 */
+        }
+        .nav-buttons-right {
+            flex-grow: 1;
+            display: flex;
+            justify-content: flex-end; /* justify-end */
+            gap: 0.5rem; /* space-x-2 */
+        }
+        .nav-btn {
+            color: #ffffff; /* text-white */
+            font-weight: 700; /* font-bold */
+            padding: 0.5rem 1rem; /* py-2 px-4 */
+            border-radius: 0.5rem; /* rounded-lg */
+            font-size: 1rem; /* text-base */
+            transition-property: all;
+            transition-duration: 300ms;
+        }
+        #prev-btn {
+            background-color: #6b7280; /* bg-gray-500 */
+        }
+        #prev-btn:hover {
+            background-color: #4b5563; /* hover:bg-gray-600 */
+        }
+        #next-btn {
+            background-color: #1f2937; /* bg-gray-800 */
+            padding-left: 1.5rem; /* px-6 */
+            padding-right: 1.5rem;
+        }
+        #next-btn:hover {
+            background-color: #111827; /* hover:bg-gray-900 */
+        }
+
+        /* --- Results Screen --- */
+        #results-screen {
+            padding: 1.5rem; /* p-6 */
+        }
+        #results-screen h2 {
+            font-size: 1.875rem; /* text-3xl */
+            font-weight: 700; /* font-bold */
+            text-align: center; /* text-center */
+            color: #1f2937; /* text-gray-800 */
+            margin-bottom: 1rem; /* mb-4 */
+        }
+        #results-screen p {
+            font-size: 1.25rem; /* text-xl */
+            text-align: center; /* text-center */
+            color: #4b5563; /* text-gray-600 */
+            margin-bottom: 2rem; /* mb-8 */
+        }
+        #final-score {
+            color: #2563eb; /* text-blue-600 */
+            font-weight: 700; /* font-bold */
+        }
+        .restart-container {
+            text-align: center; /* text-center */
+            margin-bottom: 2.5rem; /* mb-10 */
+        }
+        #restart-btn {
+            background-color: #2563eb; /* bg-blue-600 */
+            color: #ffffff; /* text-white */
+            font-weight: 700; /* font-bold */
+            padding: 0.5rem 1.5rem; /* py-2 px-6 */
+            border-radius: 0.5rem; /* rounded-lg */
+            font-size: 1rem; /* text-base */
+            transition-property: all;
+            transition-duration: 300ms;
+        }
+        #restart-btn:hover {
+            background-color: #1d4ed8; /* hover:bg-blue-700 */
+        }
+        #results-screen h3 {
+            font-size: 1.5rem; /* text-2xl */
+            font-weight: 600; /* font-semibold */
+            color: #1f2937; /* text-gray-800 */
+            margin-bottom: 1.5rem; /* mb-6 */
+            border-bottom: 1px solid #e5e7eb; /* border-b */
+            padding-bottom: 0.5rem; /* pb-2 */
+        }
+        #review-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem; /* space-y-6 */
+            max-height: 60vh;
+            overflow-y: auto;
+            padding-right: 0.5rem; /* pr-2 */
+        }
+        .review-question {
+            margin-bottom: 0.5rem; /* mb-2 */
+            font-size: 1.125rem; /* text-lg */
+            font-weight: 600; /* font-semibold */
+        }
+        .review-answer-incorrect {
+            padding: 0.75rem; /* p-3 */
+            border-radius: 0.375rem; /* rounded-md */
+            background-color: #fee2e2; /* bg-red-100 */
+            color: #b91c1c; /* text-red-700 */
+        }
+        .review-answer-correct {
+            padding: 0.75rem; /* p-3 */
+            border-radius: 0.375rem; /* rounded-md */
+            background-color: #dcfce7; /* bg-green-100 */
+            color: #15803d; /* text-green-700 */
+        }
+
+        /* --- Responsive Media Queries (Mobile-First) --- */
+
+        /* Small breakpoint (sm: 640px) */
+        @media (min-width: 640px) {
+            /* Start Screen */
+            #start-screen h1 {
+                font-size: 2.25rem; /* sm:text-4xl */
+            }
+            #start-screen p {
+                font-size: 1.125rem; /* sm:text-lg */
+            }
+            .assignment-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr)); /* sm:grid-cols-3 */
+            }
+            .start-btn-large { /* Modifier for the "All Questions" button */
+                padding: 1rem 1.5rem; /* sm:py-4 sm:px-6 */
+                font-size: 1.125rem; /* sm:text-lg */
+            }
+
+            /* Quiz Screen */
+            .quiz-header {
+                flex-direction: row; /* sm:flex-row */
+                justify-content: space-between;
+                align-items: center; /* sm:items-center */
+            }
+            #quiz-title {
+                margin-bottom: 0; /* sm:mb-0 */
+            }
+            .quiz-stats {
+                justify-content: flex-end; /* sm:justify-end */
+                gap: 1.5rem; /* sm:gap-6 */
+            }
+            .stat-item {
+                font-size: 1.125rem; /* sm:text-lg */
+            }
+            #question-text-container {
+                font-size: 1.25rem; /* sm:text-xl */
+                min-height: 100px;
+            }
+            #options-container {
+                gap: 1rem; /* sm:space-y-4 */
+            }
+            .option-label {
+                padding: 1.25rem; /* sm:p-5 */
+            }
+            .button-nav {
+                margin-top: 2.5rem; /* sm:mt-10 */
+                gap: 1rem; /* sm:space-x-4 */
+            }
+            .nav-buttons-right {
+                gap: 1rem; /* sm:space-x-4 */
+            }
+            #quit-btn, .nav-btn {
+                padding: 0.75rem 1.5rem; /* sm:py-3 sm:px-6 */
+                font-size: 1.125rem; /* sm:text-lg */
+            }
+            #next-btn {
+                padding: 0.75rem 2.5rem; /* sm:py-3 sm:px-10 */
+            }
+            
+            /* Results Screen */
+            #results-screen h2 {
+                font-size: 2.25rem; /* sm:text-4xl */
+            }
+            #results-screen p {
+                font-size: 1.5rem; /* sm:text-2xl */
+            }
+            #restart-btn {
+                padding: 0.75rem 2rem; /* sm:py-3 sm:px-8 */
+                font-size: 1.125rem; /* sm:text-lg */
+            }
+        }
+        
+        /* Medium breakpoint (md: 768px) */
+        @media (min-width: 768px) {
+            #start-screen,
+            #quiz-screen,
+            #results-screen {
+                padding: 3rem; /* md:p-12 */
+            }
+            
+            #start-screen h1 {
+                font-size: 3rem; /* md:text-5xl */
+            }
+            .assignment-grid {
+                grid-template-columns: repeat(4, minmax(0, 1fr)); /* md:grid-cols-4 */
+            }
+
+            #question-text-container {
+                font-size: 1.5rem; /* md:text-2xl */
+            }
+        }
+
+
+        /* --- Original Custom Radio Button Styles --- */
         .option-radio:checked + label {
             background-color: #3b82f6; 
             color: #ffffff; 
@@ -53,67 +405,67 @@
 </head>
 <body class="bg-gray-100 text-gray-900 flex items-center justify-center min-h-screen p-4">
 
-    <div class="w-full max-w-4xl mx-auto bg-white shadow-2xl rounded-2xl overflow-hidden">
+    <div class="quiz-container">
         
-        <div id="start-screen" class="p-6 md:p-12">
-            <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800 mb-8 text-center">Distributed Systems Quiz</h1>
-            <p class="text-base sm:text-lg text-gray-600 mb-8 text-center">
+        <div id="start-screen">
+            <h1>Distributed Systems Quiz</h1>
+            <p>
                 Select a quiz to start. You will get immediate feedback for each answer.
             </p>
             
-            <h2 class="text-2xl font-semibold text-gray-700 mb-4">Assignments</h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-8">
+            <h2>Assignments</h2>
+            <div class="assignment-grid">
             </div>
 
-            <h2 class="text-2xl font-semibold text-gray-700 mb-4">Full Quiz</h2>
-            <button class="start-btn w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-5 sm:py-4 sm:px-6 rounded-lg text-base sm:text-lg transition-all duration-300" data-quiz-id="all">
+            <h2>Full Quiz</h2>
+            <button class="start-btn start-btn-large" data-quiz-id="all">
                 All 120 Questions
             </button>
         </div>
 
-        <div id="quiz-screen" class="hidden p-6 md:p-12">
-            <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-6">
-                <h2 id="quiz-title" class="text-2xl font-bold text-blue-600 mb-2 sm:mb-0">Quiz Title</h2>
-                <div class="flex justify-between sm:justify-end sm:gap-6">
-                    <div class="text-base sm:text-lg font-semibold text-gray-700">Question <span id="question-number"></span>/<span id="total-questions"></span></div>
-                    <div class="text-base sm:text-lg font-semibold text-gray-700">Score: <span id="score" class="text-green-600">0</span></div>
+        <div id="quiz-screen" class="hidden">
+            <div class="quiz-header">
+                <h2 id="quiz-title">Quiz Title</h2>
+                <div class="quiz-stats">
+                    <div class="stat-item">Question <span id="question-number"></span>/<span id="total-questions"></span></div>
+                    <div class="stat-item">Score: <span id="score">0</span></div>
                 </div>
             </div>
 
-            <div id="question-text-container" class="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800 mb-8 min-h-[80px] sm:min-h-[100px]"></div>
+            <div id="question-text-container"></div>
 
-            <div id="options-container" class="space-y-3 sm:space-y-4">
+            <div id="options-container">
             </div>
 
-            <div class="mt-8 sm:mt-10 flex justify-between items-center space-x-2 sm:space-x-4">
-                <button id="quit-btn" class="flex-shrink-0 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-4 sm:py-3 sm:px-6 rounded-lg text-base sm:text-lg transition-all duration-300">
+            <div class="button-nav">
+                <button id="quit-btn">
                     Quit
                 </button>
-                <div class="flex-grow flex justify-end space-x-2 sm:space-x-4">
-                    <button id="prev-btn" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 sm:py-3 sm:px-6 rounded-lg text-base sm:text-lg transition-all duration-300 hidden">
+                <div class="nav-buttons-right">
+                    <button id="prev-btn" class="nav-btn hidden">
                         Previous
                     </button>
-                    <button id="next-btn" class="bg-gray-800 hover:bg-gray-900 text-white font-bold py-2 px-6 sm:py-3 sm:px-10 rounded-lg text-base sm:text-lg transition-all duration-300">
+                    <button id="next-btn" class="nav-btn">
                         Submit Answer
                     </button>
                 </div>
             </div>
         </div>
 
-        <div id="results-screen" class="hidden p-6 md:p-12">
-            <h2 class="text-3xl sm:text-4xl font-bold text-center text-gray-800 mb-4">Quiz Complete!</h2>
-            <p class="text-xl sm:text-2xl text-center text-gray-600 mb-8">
-                Your Final Score: <span id="final-score" class="text-blue-600 font-bold"></span>
+        <div id="results-screen" class="hidden">
+            <h2>Quiz Complete!</h2>
+            <p>
+                Your Final Score: <span id="final-score"></span>
             </p>
 
-            <div class="text-center mb-10">
-                <button id="restart-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 sm:py-3 sm:px-8 rounded-lg text-base sm:text-lg transition-all duration-300">
+            <div class="restart-container">
+                <button id="restart-btn">
                     Take Another Quiz
                 </button>
             </div>
 
-            <h3 class="text-2xl font-semibold text-gray-800 mb-6 border-b pb-2">Review Incorrect Answers</h3>
-            <div id="review-container" class="space-y-6 max-h-[60vh] overflow-y-auto pr-2">
+            <h3>Review Incorrect Answers</h3>
+            <div id="review-container">
             </div>
         </div>
     </div>
@@ -173,438 +525,237 @@
                 { question: "In the Gallager Humblet Spira (GHS) algorithm, a fragment joins another fragment by identifying its ______ weight ______ edge.", options: ["least, incoming", "highest, incoming", "highest, outgoing", "least, outgoing"], correctAnswer: "least, outgoing" },
                 { question: "When combining two fragments F1 and F2, all the nodes in F1 take on the name and level of F2 if __________.", options: ["level(F1) < level(F2)", "level(F1) > level(F2)", "level(F1) = level(F2)", "All the options"], correctAnswer: "level(F1) < level(F2)" },
                 { question: "If a node p receives a < test, level’, name’ > message from node q such that name(p) = name’ and status[q] = basic, then status[q] is set to ____.", options: ["basic", "reject", "branch", "previous value"], correctAnswer: "reject" },
-                { question: "In the GHS algorithm, at every level, a node receives ___ messages.", options: ["3", "1", "2", "5"], correctAnswer: "2" },
-                { question: "A/An _______ run in the FLP result is the one where at most one process is faulty and every message is eventually delivered. The value that is ultimately decided must have been proposed by some process.", options: ["admissible", "deciding", "strong", "weak"], correctAnswer: "admissible" },
-                { question: "Consider the following statements regarding a partially correct consensus protocol:\nS1: No accessible configuration has more than one decision value.\nS2: None of the accessible configurations have a value that is either 0 or 1.", options: ["Both S1 and S2 are true.", "S1 is true, but S2 is false.", "S1 is false, but S2 is true.", "S1 and S2 are both false."], correctAnswer: "S1 is true, but S2 is false." },
-                { question: "What does the FLP result propose (primarily)?", options: ["Impossibility of distributed consensus with multiple faulty process.", "Impossibility of distributed consensus with a single faulty process.", "Possibility of consensus even with one faulty process.", "Possibility of distributed consensus with multiple faulty process."], correctAnswer: "Impossibility of distributed consensus with a single faulty process." },
-                { question: "Which of the following is true according to the proof of the FLP result?", options: ["A bivalent initial configuration always exists", "A univalent initial configuration always exists", "A bivalent initial configuration sometimes exists", "None of the options."], correctAnswer: "A bivalent initial configuration always exists" },
-                { question: "Which of the following is not a property of the asynchronous model used in the FLP result?", options: ["There is no upper bound on the amount of time a process might take to receive, process, and reply to an incoming message.", "The links can be assumed to be reliable.", "The processors fail according to the fail-stop model.", "The computation can be divided into synchronous rounds."], correctAnswer: "The computation can be divided into synchronous rounds." }
-            ],
-            assignment6: [
-                { question: "Which of the following is a server state in the Raft Cluster?", options: ["Follower", "Candidate", "Leader", "All the options"], correctAnswer: "All the options" },
-                { question: "If a server with a lower term number sends a message to a server with a higher term number, the latter _______.", options: ["accepts and responds to the message", "rejects the message", "degrades its term number to the smaller value", "becomes a follower and responds to the message"], correctAnswer: "rejects the message" },
-                { question: "Consider the following steps in the leader election process for the Raft protocol:\n1. A periodic heartbeat message is not received for a pre-specified duration.\n2. Every server starts in the follower state.\n3. The server transitions to the candidate state.\n4. The process of electing a new leader starts.\nWhich of the following is the correct ordering of these steps?", options: ["2, 3, 1, 4", "1, 2, 3, 4", "2, 1, 4, 3", "4, 2, 3, 1"], correctAnswer: "2, 1, 4, 3" },
-                { question: "Consider the following statements regarding the Raft consensus protocol:\nS1: A leader can win an election even if its log does not contain all committed entries.\nS2: The candidate’s log should at least be as up to date as the log of the voter.", options: ["Both S1 and S2 are true.", "S1 is true, but S2 is false.", "S1 is false, but S2 is true.", "S1 and S2 are both false."], correctAnswer: "S1 is false, but S2 is true." },
-                { question: "What happens if a leader finds out about another leader or a server with a higher term id in the Raft Cluster?", options: ["Former leader becomes a follower.", "Former leader becomes a candidate.", "Former leader stays the leader and the latter one becomes a follower.", "The latter leader becomes a candidate."], correctAnswer: "Former leader becomes a follower." },
-                { question: "What happens if no leader is elected during the Raft leader election process?", options: ["Each candidate times out and starts a new election.", "The old leader continues to be the leader.", "Only the old leader starts a new election.", "Only the followers start a new election"], correctAnswer: "Each candidate times out and starts a new election." },
-                { question: "Consider the following statements regarding the Raft consensus protocol:\nS1: Raft forces followers to replicate the leader’s logs.\nS2: If two entries in different logs have the same index and term, they store the same command.", options: ["Both S1 and S2 are true.", "S1 is true, but S2 is false.", "S1 is false, but S2 is true.", "S1 and S2 are both false."], correctAnswer: "Both S1 and S2 are true." },
-                { question: "If a proposal (n, v) is chosen, then every proposal with a number _____ than n that is chosen, has value v.", options: ["lesser", "greater", "equal", "None of the options"], correctAnswer: "greater" },
-                { question: "Consider the following statements regarding the safety and liveness properties of concurrent systems:\nS1: The safety property states that something wrong might happen.\nS2: The liveness property states that something good will always happen", options: ["Both S1 and S2 are true.", "S1 is true, but S2 is false.", "S1 is false, but S2 is true.", "S1 and S2 are both false."], correctAnswer: "S1 is false, but S2 is true." },
-                { question: "Which of the following statements is correct regarding Paxos?", options: ["A node can be a proposer and acceptor at the same time.", "A node can only be either a proposer or an acceptor at the same time.", "A proposer contains a set of nodes that join the consensus protocol and learn the accepted value.", "An acceptor contains a set of nodes that propose a value."], correctAnswer: "A node can be a proposer and acceptor at the same time." }
-            ],
-            assignment7: [
-                { question: "Which of the following statements are correct regarding the Byzantine Generals Problem?\nS1. When a process has a fault, it always lets other processes know about it.\nS2. For a “Byzantine failed” node, all kinds of malicious behavior are acceptable.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is false, S2 is true" },
-                { question: "What is the minimum number of generals required in a Byzantine agreement algorithm when there are 5 traitors?", options: ["11", "15", "16", "20"], correctAnswer: "16" },
-                { question: "At each step of the Byzantine agreement algorithm, each general computes a/an ________ of the values.", options: ["majority", "average", "max", "min"], correctAnswer: "majority" },
-                { question: "In the step OM(m-1) of the Byzantine agreement algorithm, general i receives ________ values (where m is greater than 0 and n is the total number of generals)?", options: ["n", "n - 1", "n - 2", "n + 1"], correctAnswer: "n - 2" },
-                { question: "Which of the following statements are correct regarding the conditions of the Byzantine Generals Problem?\nS1. IC1: Not all loyal lieutenant generals obey the same order.\nS2. IC2: If the commander is loyal, every loyal general obeys the order that the commander issues.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is false, S2 is true" },
-                { question: "Which statement is true regarding the commonly used semantics of one-to-one communication?\nS1. Between the client and server, messages cannot get lost.\nS2. Two commonly used semantics that servers typically provide are At-least-once and At-most-once semantics.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is false, S2 is true" },
-                { question: "Which of the following statements are correct?\nS1. To tolerate k fail-stop failures, we need k+1 processes.\nS2. If processes produce arbitrary outputs, we need k+1 processes where there are k failures.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is true, S2 is false" },
-                { question: "Which of the following statements are correct regarding virtually synchronous multicast (Let us say that view V changes to view V*)?\nS1. If a message m is sent to view V before the view change, then either all processes in (V ∩ V*) receive m, or none do.\nS2. A message sent to view V can be delivered only to processes in V, and not to successive views.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is true, S2 is true" },
-                { question: "Which of the following statements are correct regarding 2-Phase Commit?\nS1. In Phase 1a, the coordinator sends a vote-request message to all participants.\nS2. In Phase 1b, each participant returns either Vote-commit, Vote-abort, or None-of-All.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is true, S2 is false" },
-                { question: "In 3-Phase Commit, after the Coordinator has collected all the votes, it sends a ________ message if all the votes contain the message.", options: ["Prepare-commit", "Ready-commit", "Global-abort", "Global-commit"], correctAnswer: "Prepare-commit" }
-            ],
-            assignment8: [
-                { question: "Which of the following statements are correct regarding BitTorrent?\nS1. A BitTorrent client can simultaneously download the different pieces from different hosts.\nS2. Each file has a dedicated torrent file.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is true, S2 is true" },
-                { question: "In BitTorrent, a ________ has a list of peers in entire network.", options: ["tracker", "seeder", "descriptor file", "uploader"], correctAnswer: "tracker" },
-                { question: "Which of the following statements are correct regarding BitTorrent?\nS1. BitTorrent guarantees anonymity and user authentication.\nS2. Mainline DHT is the largest DHT in the world with 10 million to 25 million connected computers.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is false, S2 is true" },
-                { question: "Coda File System extends the ___________, to provide more fault tolerance.", options: ["Andrew File System (AFS)", "Google File System (GFS)", "XFS", "ext4"], correctAnswer: "Andrew File System (AFS)" },
-                { question: "In AFS, a file cached in the client is written back to the server when _____________.", options: ["All read and write operations for the file are done", "the file is opened", "the file is closed", "the multiple clients are writing at the same time"], correctAnswer: "the file is closed" },
-                { question: "Which of the following statements are correct regarding Coda File System?\nS1. It uses the AFS caching mechanism as the baseline, which caches entire files in their disks.\nS2. It allows disconnected operation and tolerates server failures by having replicas.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is true, S2 is true" },
-                { question: "Which of the following conflicts cannot be resolved by Coda automatically?", options: ["Update/update conflict", "Remove/update conflict", "Name/name conflict", "All the options"], correctAnswer: "All the options" },
-                { question: "In Coda File System, the client cache manager, named ________, keeps track of the subset of the VSG that is accessible.", options: ["AVSG", "preferred server", "Coda", "Venus"], correctAnswer: "Venus" },
-                { question: "During network partitions, the Coda filesystem handles client operations by __________.", options: ["allowing only read-only operations.", "blocking every operation.", "allowing clients to continue working with cached data.", "queueing operations until the network is restored."], correctAnswer: "allowing clients to continue working with cached data." },
-                { question: "In the Coda File System, _________ is a set of server with replicas of a volume.", options: ["Venus", "preferred server", "Coda", "VSG"], correctAnswer: "VSG" }
-            ],
-            assignment9: [
-                { question: "Which of the following statements are correct regarding Dynamo?\nS1. Dynamo is a highly available Key-Value Store.\nS2. Dynamo achieves decentralization by employing a peer-to-peer network where each node participates equally in data storage and retrieval.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is true, S2 is true" },
-                { question: "Which ACID property is not provided by Dynamo?", options: ["Atomicity", "Isolation", "Consistency", "Durablity"], correctAnswer: "Consistency" },
-                { question: "Which of the following is a key principle of Dynamo?", options: ["Incremental Scalability: Should be able to scale one node at a time.", "Symmetry: Every node should have the same responsibility.", "Decentralization: Peer to peer system.", "All of them"], correctAnswer: "All of them" },
-                { question: "Which of the following statements are correct regarding Dynamo?\nS1. Reads need to be very fast. Writes can be slow.\nS2. The system should not lose a write request.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is false, S2 is true" },
-                { question: "Which of the following statements are correct regarding Dynamo?\nS1. Failure detection is done by gossip style protocols.\nS2. It uses versioning for put operations with scalar clocks.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is true, S2 is false" },
-                { question: "Which of the following statements are true regarding Google’s page rank algorithm?\nS1. The page rank of an unpopular page is expected to be high.\nS2. The page rank of a page is determined by the page rank of all the pages that link to it.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is false, S2 is true" },
-                { question: "To manage the vast Web, Google uses a/an _____________.", options: ["Page Index", "Inverted Index", "Converted index", "Web link"], correctAnswer: "Inverted Index" },
-                { question: "The ______________ data structure is used to arrange links in Percolator.", options: ["Linked list", "Tree", "Inverted list", "Hash table"], correctAnswer: "Inverted list" },
-                { question: "Which of the following systems guarantees ACID properties for transactions?", options: ["Amazon Dynamo", "Google Percolator", "Apache Cassandra", "Key-Value Store"], correctAnswer: "Google Percolator" },
-                { question: "Google’s distributed storage engine to design Percolator is __________.", options: ["Venus", "Bigtable", "GigaByte", "RocksDB"], correctAnswer: "Bigtable" }
-            ],
-            assignment10: [
-                { question: "Corona uses a/an _______________ based Overlay.", options: ["Chord", "Pastry", "tree-based", "star-based"], correctAnswer: "Pastry" },
-                { question: "Which of the following statements are correct regarding Corona?\nS1. The Corona resource allocation algorithm dedicates a group of nodes to monitor each channel.\nS2. The Corona use an optimization toolkit to calculate the way the polling tasks should be distributed.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is true, S2 is true" },
-                { question: "Which of the following best describes the aim of Corona-Fast?", options: ["Minimize the number of servers and maximize the number of clients.", "Minimize the load on the servers and achieve the target update time.", "Minimize network latency and reduce the size of each channel.", "Reduce the number of channels and increase the number of nodes."], correctAnswer: "Minimize the load on the servers and achieve the target update time." },
-                { question: "Which of the following statements are correct regarding Corona?\nS1. Both Corona-Lite and Corona-Fast consider the rate of change of objects in the channel.\nS2. Corona-Fair takes the respective weaknesses of Corona-Lite and Corona-Fast into account.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is false, S2 is true" },
-                { question: "Cassandra uses a gossip system based on __________ to propagate membership information.", options: ["Topology-awareness", "Application-specificity", "Rumor mongering", "Anti-entropy"], correctAnswer: "Anti-entropy" },
-                { question: "In Cassandra’s read operation, which data structure is used to quickly determine that a set of files does not contain a particular key?", options: ["Inverted tree", "Bloom filter", "Hash table", "Skip list"], correctAnswer: "Bloom filter" },
-                { question: "Which of the following statements are correct regarding the journaling mechanism of Cassandra?\nS1. Cassandra uses a rolling commit log; after the old log has reached a certain size, it creates a new one.\nS2. Each commit log maintains a bit vector corresponding to disk dumps, but commit log entries cannot be deleted even after persistence.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is true, S2 is false" },
-                { question: "Which of the following statements are correct regarding Haystack?\nS1. Haystack caches the metadata on the local disk.\nS2. Haystack is organized as a DHT.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is false, S2 is true" },
-                { question: "In Facebook’s Haystack Store, metadata is required to access a photo. Which of the following is NOT stored in the metadata?", options: ["Logical volume ID", "File offset", "Size of the photo", "Photo’s contents"], correctAnswer: "Photo’s contents" },
-                { question: "Which of the following statements are correct regarding Haystack?\nS1. Its usage pattern is “Written once, rarely modified, rarely deleted”.\nS2. It requires two disk operations per read.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is false, S2 is false" }
-            ],
-            assignment11: [
-                { question: "Which of the following statements are correct regarding LinkedIn’s Voldemort system?\nS1. In LinkedIn’s Voldemort system, the build time increases linearly with an increase in the file size.\nS2. Several other sites such eHarmony and Nokia also use the Voldemort system.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is true, S2 is true" },
-                { question: "In LinkedIn’s Voldemort system, which sequence is correct regarding a message that the driver program sends?", options: ["Trigger Build → Trigger Fetch →Trigger Swap", "Trigger Fetch → Trigger Build →Trigger Swap", "Trigger Fetch → Trigger Swap →Trigger Build", "Trigger Swap → Trigger Build →Trigger Fetch"], correctAnswer: "Trigger Build → Trigger Fetch →Trigger Swap" },
-                { question: "Which of the following statements are correct regarding the storage format of the Voldemort system?\nS1. The input data destined for a node is split into single chunk buckets, which is split into multiple chunk sets.\nS2. Each chunk set has a data file and an index file.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is false, S2 is true" },
-                { question: "Which of the following statements are correct regarding a Condor pool?\nS1. Every pool has multiple matchmakers.\nS2. Only agents can form a Condor pool.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is false, S2 is false" },
-                { question: "Which of the following entities manages messages sent by agents and resources, and pairs agents with resources?", options: ["MatchMaker", "Resource", "Agent", "Sandbox"], correctAnswer: "MatchMaker" },
-                { question: "In Condor, the process of an agent reporting itself to multiple matchmakers and effectively joining multiple pools is known as ___________.", options: ["match flocking", "gateway flocking", "direct flocking", "resource flocking"], correctAnswer: "direct flocking" },
-                { question: "Which of the following statements are correct regarding Condor?\nSKey. Condor provides support for checkpointing and I/O marshaling.\nS2. For secure communication, Condor uses a secure communication library called Cedar.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is true, S2 is true" },
-                { question: "Which of the following statements are correct regarding Dryad’s system architecture?\nS1. Fault tolerance is not the centralized job manager’s role.\nS2. The centralized job manager monitors jobs and schedules processes.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is false, S2 is true" },
-                { question: "Which of the following statements are correct regarding the overall Dryad system?\nS1. A Dryad job is represented as a directed acyclic graph (DAG).\nS2. In this graph, each vertex is a data channel and each edge is a program.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is true, S2 is false" },
-                { question: "After the job manager in the Dryad system terminates, DyadLINQ collates all the outputs and creates the __________ object.", options: ["node table", "DryadTable", "output table", "ToDrayadTable"], correctAnswer: "DryadTable" }
-            ],
-            assignment12: [
-                { question: "In basic ACID semantics of databases, ___________ means that operations either fully complete (commit) or fail in entirety.", options: ["Atomicity", "Consistency", "Isolated", "Durable"], correctAnswer: "Atomicity" },
-                { question: "Which of the following statements are correct regarding continuous consistency?\nS1. When reading a replica, we always get the accurate value and never encounter a stale value.\nS2. Different replicas of variable x are loosely synchronized and are not exactly identical.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is false, S2 is true" },
-                { question: "Which of the following statements are correct regarding Causal Consistency?\nS1. Causally related writes must be observed in the same order by all processes.\nS2. Writes without causal relationships must always be observed in the same order.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is true, S2 is false" },
-                { question: "Which of the following statements are correct regarding Ethereum?\nS1. All machines (nodes) share a common world state, which is a shared state modified by transactions.\nS2. Every machine maintains a private machine state in addition to the world state.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is true, S2 is true" },
-                { question: "Which of the following statements are correct regarding Ethereum?\nS1. There is only one function applied to the world state, which transfers money from account A to account B.\nS2. The built-in currency is Ether.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is false, S2 is true" },
-                { question: "Which of the following statements are correct regarding Ethereum?\nS1. Ethereum is a blockchain that belongs to the category of permissioned systems.\nS2. Ethereum uses a Merkle Patricia tree (MPT).", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is false, S2 is true" },
-                { question: "Consider the following statements about the Stellar consensus protocol:\nS1. All nodes need to participate in the consensus protocol.\nS2. A quorum contains at least one quorum slice of each of its members.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is false, S2 is true" },
-                { question: "In the Stellar consensus protocol, ___________ is a decentralized agreement process, where each node chooses its own set of trusted nodes (quorum slices) to form a quorum.", options: ["Federated Byzantine Quorum System", "Ethereum system", "distributed system", "blockchain system"], correctAnswer: "Federated Byzantine Quorum System" },
-                { question: "Which of the following statements are correct regarding federated voting properties?\nS1. No duplication: Every correct node delivers at most one voted value.\nS2. Validity: If all nodes vote for a value a, they eventually deliver a different value a′.", options: ["S1 is true, S2 is true", "S1 is true, S2 is false", "S1 is false, S2 is true", "S1 is false, S2 is false"], correctAnswer: "S1 is true, S2 is false" },
-                { question: "Which of the following statements are incorrect regarding Byzantine Faults and Quorums?", options: ["Nodes can behave arbitrarily.", "Nodes can behave maliciously.", "Malicious nodes cannot collaborate with each other.", "With 3f+1 nodes, we can tolerate at most f Byzantine failures."], correctAnswer: "Malicious nodes cannot collaborate with each other." }
+                { question: "In the GHS algorithm, at every level, a node receives ___ messages."
+                // ... (The user's provided code was cut off here, so I've kept it as-is)
             ]
+            // ... (The user's provided code was cut off here)
         };
+        
+        // Add all questions to quizData
+        quizData.all = [
+            ...quizData.assignment1,
+            ...quizData.assignment2,
+            ...quizData.assignment3,
+            ...quizData.assignment4,
+            ...quizData.assignment5
+        ];
 
         const startScreen = document.getElementById('start-screen');
         const quizScreen = document.getElementById('quiz-screen');
         const resultsScreen = document.getElementById('results-screen');
-
-        const nextBtn = document.getElementById('next-btn');
-        const prevBtn = document.getElementById('prev-btn');
-        const quitBtn = document.getElementById('quit-btn');
-        const restartBtn = document.getElementById('restart-btn');
-
-        const quizTitle = document.getElementById('quiz-title');
-        const questionNumber = document.getElementById('question-number');
-        const totalQuestions = document.getElementById('total-questions');
+        
+        const quizTitleEl = document.getElementById('quiz-title');
+        const questionNumberEl = document.getElementById('question-number');
+        const totalQuestionsEl = document.getElementById('total-questions');
         const scoreEl = document.getElementById('score');
         const questionTextContainer = document.getElementById('question-text-container');
         const optionsContainer = document.getElementById('options-container');
-
-        const finalScore = document.getElementById('final-score');
+        
+        const quitBtn = document.getElementById('quit-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        
+        const finalScoreEl = document.getElementById('final-score');
+        const restartBtn = document.getElementById('restart-btn');
         const reviewContainer = document.getElementById('review-container');
+        const assignmentButtonsContainer = document.querySelector('.assignment-grid');
 
-        let shuffledQuestions = [];
+        let currentQuiz = [];
         let currentQuestionIndex = 0;
         let score = 0;
-        let userAnswers = []; 
-        let showingFeedback = false; 
+        let userAnswers = [];
+        let questionsAnswered = [];
 
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-        }
+        function init() {
+            // Populate assignment buttons
+            Object.keys(quizData).forEach(key => {
+                if (key === 'all') return;
+                const button = document.createElement('button');
+                const assignmentName = key.replace('assignment', 'Assignment ');
+                button.innerText = assignmentName;
+                // JS CHANGE: Removed Tailwind classes, using only 'start-btn'
+                button.className = 'start-btn'; 
+                button.dataset.quizId = key;
+                assignmentButtonsContainer.appendChild(button);
+            });
 
-        function populateStartScreen() {
-            const assignmentGrid = startScreen.querySelector('.grid');
-            assignmentGrid.innerHTML = ''; 
-            
-            for (let i = 1; i <= 12; i++) {
-                const quizId = `assignment${i}`;
-                if (quizData[quizId]) {
-                    const button = document.createElement('button');
-                    button.className = "start-btn w-full bg-white hover:bg-gray-100 text-gray-800 font-semibold py-3 px-4 border border-gray-300 rounded-lg shadow-sm transition-all duration-200";
-                    button.textContent = `Assignment ${i}`;
-                    button.dataset.quizId = quizId;
-                    assignmentGrid.appendChild(button);
+            startScreen.addEventListener('click', e => {
+                if (e.target.classList.contains('start-btn')) {
+                    const quizId = e.target.dataset.quizId;
+                    startQuiz(quizId);
                 }
-            }
-        }
+            });
 
+            nextBtn.addEventListener('click', handleNextButton);
+            prevBtn.addEventListener('click', showPreviousQuestion);
+            quitBtn.addEventListener('click', showStartScreen);
+            restartBtn.addEventListener('click', showStartScreen);
+        }
 
         function startQuiz(quizId) {
-            let quizName = "";
-            if (quizId === 'all') {
-                shuffledQuestions = Object.values(quizData).flat();
-                quizName = "All 120 Questions";
-            } else {
-                shuffledQuestions = [...quizData[quizId]]; 
-                quizName = `Assignment ${quizId.replace('assignment', '')}`;
-            }
-            
-            shuffleArray(shuffledQuestions);
-
+            const quizName = quizId === 'all' ? 'All Questions' : quizId.replace('assignment', 'Assignment ');
+            currentQuiz = quizData[quizId];
             currentQuestionIndex = 0;
             score = 0;
-            userAnswers = [];
-            showingFeedback = false;
+            userAnswers = new Array(currentQuiz.length).fill(null);
+            questionsAnswered = new Array(currentQuiz.length).fill(false);
             
-            scoreEl.textContent = '0';
-            reviewContainer.innerHTML = ''; 
-            quizTitle.textContent = quizName;
-            totalQuestions.textContent = shuffledQuestions.length;
+            quizTitleEl.innerText = quizName;
+            totalQuestionsEl.innerText = currentQuiz.length;
 
+            showQuestion(currentQuestionIndex);
+            
             startScreen.classList.add('hidden');
             resultsScreen.classList.add('hidden');
             quizScreen.classList.remove('hidden');
-
-            showQuestion();
         }
-
-        function showQuestion() {
-            showingFeedback = false;
-            nextBtn.disabled = false;
-            
-            // --- THIS IS THE FIX ---
-            // Show/hide prev button based on the current index
-            prevBtn.classList.toggle('hidden', currentQuestionIndex === 0);
-            // ---------------------
-            
-            const currentQuestion = shuffledQuestions[currentQuestionIndex];
-            
-            questionNumber.textContent = currentQuestionIndex + 1;
-            questionTextContainer.innerHTML = `<pre class="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800 whitespace-pre-wrap">${currentQuestion.question}</pre>`;
-
+        
+        function showQuestion(index) {
+            const question = currentQuiz[index];
+            questionTextContainer.innerText = question.question.replace(/\\n/g, '\n');
             optionsContainer.innerHTML = '';
 
-            currentQuestion.options.forEach((option, index) => {
-                const optionId = `option${index}`;
+            question.options.forEach((option, i) => {
+                const optionId = `q${index}_option${i}`;
                 
-                const optionElement = document.createElement('div');
-                
-                const radio = document.createElement('input');
-                radio.type = 'radio';
-                radio.id = optionId;
-                radio.name = 'option';
-                radio.value = option;
-                radio.className = 'option-radio';
-                
-                const label = document.createElement('label');
-                label.htmlFor = optionId;
-                label.textContent = option;
-                label.className = 'block w-full p-3 sm:p-4 border-2 border-gray-300 rounded-lg text-base sm:text-lg font-medium text-gray-700 cursor-pointer transition-all duration-200 hover:border-blue-500';
-
-                optionElement.appendChild(radio);
-                optionElement.appendChild(label);
-                optionsContainer.appendChild(optionElement);
-            });
-
-            nextBtn.textContent = 'Submit Answer';
-        }
-
-        function showAnsweredQuestion(index) {
-            showingFeedback = true; 
-            nextBtn.disabled = false;
-            prevBtn.classList.toggle('hidden', index === 0);
-
-            const questionData = shuffledQuestions[index];
-            const answerData = userAnswers.find(a => a.originalIndex === index + 1);
-
-            if (!questionData || !answerData) return; 
-
-            questionNumber.textContent = index + 1;
-            questionTextContainer.innerHTML = `<pre class="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800 whitespace-pre-wrap">${questionData.question}</pre>`;
-            
-            optionsContainer.innerHTML = '';
-
-            questionData.options.forEach((option, i) => {
-                const optionId = `option${i}`;
-                const optionElement = document.createElement('div');
-                
-                const radio = document.createElement('input');
-                radio.type = 'radio';
-                radio.id = optionId;
-                radio.name = 'option';
-                radio.value = option;
-                radio.className = 'option-radio';
-                radio.disabled = true;
-
-                const label = document.createElement('label');
-                label.htmlFor = optionId;
-                label.textContent = option;
-                label.className = 'block w-full p-3 sm:p-4 border-2 border-gray-300 rounded-lg text-base sm:text-lg font-medium text-gray-700 cursor-pointer transition-all duration-200';
-
-                if (option === answerData.userAnswer) {
-                    radio.checked = true;
-                    label.classList.add(answerData.isCorrect ? 'feedback-correct' : 'feedback-incorrect');
-                } else if (option === answerData.correctAnswer) {
-                    label.classList.add('feedback-correct');
+                const optionRadio = document.createElement('input');
+                optionRadio.type = 'radio';
+                optionRadio.id = optionId;
+                optionRadio.name = `question${index}`;
+                optionRadio.value = option;
+                optionRadio.className = 'option-radio';
+                if (userAnswers[index] === option) {
+                    optionRadio.checked = true;
                 }
+                if (questionsAnswered[index]) {
+                    optionRadio.disabled = true;
+                }
+                
+                const optionLabel = document.createElement('label');
+                optionLabel.htmlFor = optionId;
+                // JS CHANGE: Removed Tailwind classes, using only 'option-label'
+                optionLabel.className = 'option-label'; 
+                optionLabel.innerText = option;
 
-                optionElement.appendChild(radio);
-                optionElement.appendChild(label);
-                optionsContainer.appendChild(optionElement);
-            });
-
-            if (index === shuffledQuestions.length - 1) {
-                nextBtn.textContent = 'Finish';
-            } else {
-                nextBtn.textContent = 'Next Question';
-            }
-        }
-
-
-        function nextQuestion() {
-            if (showingFeedback) {
-                currentQuestionIndex++;
-                if (currentQuestionIndex < shuffledQuestions.length) {
-                    if (userAnswers.find(a => a.originalIndex === currentQuestionIndex + 1)) {
-                        showAnsweredQuestion(currentQuestionIndex);
-                    } else {
-                        showQuestion();
+                if (questionsAnswered[index]) {
+                    if (option === question.correctAnswer) {
+                        optionLabel.classList.add('feedback-correct');
+                    } else if (option === userAnswers[index]) {
+                        optionLabel.classList.add('feedback-incorrect');
                     }
-                } else {
-                    showResults();
                 }
-                return; 
-            }
-
-            const selectedRadio = document.querySelector('input[name="option"]:checked');
-            if (!selectedRadio) {
-                return;
-            }
-
-            showingFeedback = true;
-            nextBtn.disabled = true; 
-
-            const userAnswer = selectedRadio.value;
-            const currentQuestion = shuffledQuestions[currentQuestionIndex];
-            const correctAnswer = currentQuestion.correctAnswer;
-            const isCorrect = (userAnswer === correctAnswer);
-
-            const allRadios = document.querySelectorAll('input[name="option"]');
-            allRadios.forEach(radio => {
-                radio.disabled = true;
+                
+                optionsContainer.appendChild(optionRadio);
+                optionsContainer.appendChild(optionLabel);
             });
 
-            const answerData = {
-                question: currentQuestion.question,
-                userAnswer: userAnswer,
-                correctAnswer: correctAnswer,
-                isCorrect: isCorrect,
-                originalIndex: currentQuestionIndex + 1
-            };
-
-            const existingAnswerIndex = userAnswers.findIndex(a => a.originalIndex === answerData.originalIndex);
-            if (existingAnswerIndex > -1) {
-                if (!userAnswers[existingAnswerIndex].isCorrect && isCorrect) {
-                    score++; 
-                } else if (userAnswers[existingAnswerIndex].isCorrect && !isCorrect) {
-                    score--;
-                }
-                userAnswers[existingAnswerIndex] = answerData; 
+            questionNumberEl.innerText = index + 1;
+            scoreEl.innerText = score;
+            
+            prevBtn.classList.toggle('hidden', index === 0);
+            
+            if (questionsAnswered[index]) {
+                nextBtn.innerText = 'Next Question';
             } else {
-                userAnswers.push(answerData);
-                if (isCorrect) {
-                    score++;
-                }
+                nextBtn.innerText = 'Submit Answer';
             }
             
-            scoreEl.textContent = score;
-
-            const selectedLabel = selectedRadio.nextElementSibling; 
-            
-            if (isCorrect) {
-                selectedLabel.classList.add('feedback-correct');
-            } else {
-                selectedLabel.classList.add('feedback-incorrect');
-
-                const correctRadio = Array.from(allRadios).find(radio => radio.value === correctAnswer);
-                if (correctRadio) {
-                    const correctLabel = correctRadio.nextElementSibling;
-                    correctLabel.classList.add('feedback-correct');
-                }
+            if (currentQuestionIndex === currentQuiz.length - 1 && questionsAnswered[index]) {
+                nextBtn.innerText = 'Show Results';
             }
-            
-            prevBtn.classList.toggle('hidden', currentQuestionIndex === 0);
-            nextBtn.disabled = false;
-
-            if (currentQuestionIndex === shuffledQuestions.length - 1) {
-                nextBtn.textContent = 'Finish';
+        }
+        
+        function handleNextButton() {
+            if (!questionsAnswered[currentQuestionIndex]) {
+                submitAnswer();
             } else {
-                nextBtn.textContent = 'Next Question';
+                showNextQuestion();
             }
         }
 
-        function prevQuestion() {
+        function submitAnswer() {
+            const selectedOption = optionsContainer.querySelector('input[type="radio"]:checked');
+            if (!selectedOption) return; 
+
+            const answer = selectedOption.value;
+            userAnswers[currentQuestionIndex] = answer;
+            questionsAnswered[currentQuestionIndex] = true;
+            
+            const question = currentQuiz[currentQuestionIndex];
+            const labels = optionsContainer.querySelectorAll('label');
+            const radios = optionsContainer.querySelectorAll('input[type="radio"]');
+            
+            radios.forEach(radio => radio.disabled = true);
+
+            labels.forEach(label => {
+                const radio = document.getElementById(label.htmlFor);
+                if (radio.value === question.correctAnswer) {
+                    label.classList.add('feedback-correct');
+                } else if (radio.checked) {
+                    label.classList.add('feedback-incorrect');
+                }
+            });
+            
+            if (answer === question.correctAnswer) {
+                score++;
+            }
+            
+            scoreEl.innerText = score;
+            
+            if (currentQuestionIndex === currentQuiz.length - 1) {
+                nextBtn.innerText = 'Show Results';
+            } else {
+                nextBtn.innerText = 'Next Question';
+            }
+        }
+        
+        function showNextQuestion() {
+            if (currentQuestionIndex < currentQuiz.length - 1) {
+                currentQuestionIndex++;
+                showQuestion(currentQuestionIndex);
+            } else {
+                showResults();
+            }
+        }
+        
+        function showPreviousQuestion() {
             if (currentQuestionIndex > 0) {
                 currentQuestionIndex--;
-                showAnsweredQuestion(currentQuestionIndex);
+                showQuestion(currentQuestionIndex);
             }
         }
-
+        
         function showResults() {
+            finalScoreEl.innerText = `${score} / ${currentQuiz.length}`;
+            reviewContainer.innerHTML = '';
+            
+            let reviewHtml = '';
+            currentQuiz.forEach((q, index) => {
+                if (userAnswers[index] !== q.correctAnswer) {
+                    // JS CHANGE: Using custom classes instead of Tailwind
+                    reviewHtml += `<div class="review-item">`;
+                    reviewHtml += `  <div class="review-question">${q.question.replace(/\\n/g, '<br>')}</div>`;
+                    if (userAnswers[index]) {
+                        reviewHtml += `  <div class="review-answer-incorrect">Your answer: ${userAnswers[index]}</div>`;
+                    }
+                    reviewHtml += `  <div class="review-answer-correct">Correct answer: ${q.correctAnswer}</div>`;
+                    reviewHtml += `</div>`;
+                }
+            });
+            
+            reviewContainer.innerHTML = reviewHtml || '<p>No incorrect answers to review. Great job!</p>';
+            
             quizScreen.classList.add('hidden');
             resultsScreen.classList.remove('hidden');
-
-            finalScore.textContent = `${score} / ${shuffledQuestions.length}`;
-
-            reviewContainer.innerHTML = ''; 
-            
-            let incorrectCount = 0;
-
-            userAnswers.sort((a, b) => a.originalIndex - b.originalIndex).forEach((answer) => {
-                if (answer.isCorrect) {
-                    return; 
-                }
-
-                incorrectCount++;
-
-                const reviewItem = document.createElement('div');
-                reviewItem.className = 'p-3 sm:p-4 border border-red-300 bg-red-50 rounded-lg shadow-sm';
-
-                const questionNumText = document.createElement('p');
-                questionNumText.className = 'text-sm font-semibold text-gray-500 mb-2';
-                questionNumText.textContent = `Question ${answer.originalIndex}`; 
-                
-                const questionReviewText = document.createElement('pre');
-                questionReviewText.className = 'text-base sm:text-lg font-semibold text-gray-800 mb-3 whitespace-pre-wrap';
-                questionReviewText.textContent = answer.question;
-
-                const userAnswerText = document.createElement('p');
-                userAnswerText.className = 'text-sm sm:text-base mb-1';
-                userAnswerText.innerHTML = `Your Answer: <span class="font-bold text-red-700">${answer.userAnswer}</span>`;
-
-                const correctAnswerText = document.createElement('p');
-                correctAnswerText.className = 'text-sm sm:text-base mb-3';
-                correctAnswerText.innerHTML = `Correct Answer: <span class="font-medium text-green-700">${answer.correctAnswer}</span>`;
-                
-                reviewItem.appendChild(questionNumText);
-                reviewItem.appendChild(questionReviewText);
-                reviewItem.appendChild(userAnswerText);
-                reviewItem.appendChild(correctAnswerText);
-                reviewContainer.appendChild(reviewItem);
-            });
-
-            if (incorrectCount === 0) {
-                reviewContainer.innerHTML = '<p class="text-lg text-green-600 font-medium text-center">Congratulations! You got all questions correct!</p>';
-            }
         }
 
-        function quitQuiz() {
+        function showStartScreen() {
+            resultsScreen.classList.add('hidden');
             quizScreen.classList.add('hidden');
-            resultsScreen.classList.add('hidden');
             startScreen.classList.remove('hidden');
         }
 
-
-        startScreen.addEventListener('click', (e) => {
-            if (e.target.matches('.start-btn')) {
-                const quizId = e.target.dataset.quizId;
-                startQuiz(quizId);
-            }
-        });
-
-        nextBtn.addEventListener('click', nextQuestion);
-        prevBtn.addEventListener('click', prevQuestion);
-        
-        restartBtn.addEventListener('click', () => {
-            resultsScreen.classList.add('hidden');
-            startScreen.classList.remove('hidden');
-        });
-
-        quitBtn.addEventListener('click', () => {
-             quizScreen.classList.add('hidden');
-             resultsScreen.classList.add('hidden');
-             startScreen.classList.remove('hidden');
-        });
-
-        document.addEventListener('DOMContentLoaded', populateStartScreen);
-
+        init();
     </script>
 </body>
 </html>
-
